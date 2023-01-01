@@ -45,7 +45,7 @@ params:
         - post
     featuredImageField: image
     rssFullContent: true
-    favicon: /aniya.ico  # e.g.: favicon placed in `static/favicon.ico` of your site folder, then set this field to `/favicon.ico` (`/` is necessary)
+    favicon: /aniya_blog/aniya.ico  # e.g.: favicon placed in `static/favicon.ico` of your site folder, then set this field to `/favicon.ico` (`/` is necessary)
 
     footer:
         since: 2020
