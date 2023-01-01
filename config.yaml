@@ -1,8 +1,9 @@
-baseurl: https://example.com
+baseurl: https://XieWeikai.github.io/aniya_blog
 languageCode: zh-cn #en-us
 theme: hugo-theme-stack
 paginate: 5
 title: Aniya's Blog
+publishDir: "docs"
 
 languages:
     zh-cn:
