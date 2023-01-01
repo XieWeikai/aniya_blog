@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://XieWeikai.github.io/aniya_blog/</loc>
-    <lastmod>2020-10-09T00:00:00+00:00</lastmod>
+    <lastmod>2023-01-01T16:38:36+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -16,7 +16,7 @@
                 />
   </url><url>
     <loc>https://XieWeikai.github.io/aniya_blog/categories/</loc>
-    <lastmod>2020-09-09T00:00:00+00:00</lastmod>
+    <lastmod>2023-01-01T16:38:36+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -28,13 +28,19 @@
                 href="https://XieWeikai.github.io/aniya_blog/categories/"
                 />
   </url><url>
+    <loc>https://XieWeikai.github.io/aniya_blog/categories/os/</loc>
+    <lastmod>2023-01-01T16:38:36+08:00</lastmod>
+  </url><url>
+    <loc>https://XieWeikai.github.io/aniya_blog/p/os-flag/</loc>
+    <lastmod>2023-01-01T16:38:36+08:00</lastmod>
+  </url><url>
+    <loc>https://XieWeikai.github.io/aniya_blog/post/</loc>
+    <lastmod>2023-01-01T16:38:36+08:00</lastmod>
+  </url><url>
     <loc>https://XieWeikai.github.io/aniya_blog/p/test-chinese/</loc>
     <lastmod>2020-09-09T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://XieWeikai.github.io/aniya_blog/categories/discard/</loc>
-    <lastmod>2020-09-09T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://XieWeikai.github.io/aniya_blog/post/</loc>
     <lastmod>2020-09-09T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://XieWeikai.github.io/aniya_blog/archives/</loc>
