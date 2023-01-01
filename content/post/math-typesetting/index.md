@@ -47,3 +47,5 @@ Block math:
 $$
  \varphi = 1+\frac{1} {1+\frac{1} {1+\frac{1} {1+\cdots} } } 
 $$
+
+inline math is like this  $a^2+b^2=c^2$
