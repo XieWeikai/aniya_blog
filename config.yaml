@@ -3,7 +3,6 @@ languageCode: zh-cn #en-us
 theme: hugo-theme-stack
 paginate: 5
 title: Aniya's Blog
-publishDir: "public"
 
 languages:
     zh-cn:
