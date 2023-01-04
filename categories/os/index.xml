@@ -1,2 +1,276 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OS on Aniya's Blog</title><link>https://XieWeikai.github.io/aniya_blog/categories/os/</link><description>Recent content in OS on Aniya's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 01 Jan 2023 16:38:36 +0800</lastBuildDate><atom:link href="https://XieWeikai.github.io/aniya_blog/categories/os/index.xml" rel="self" type="application/rss+xml"/><item><title>OS flag</title><link>https://XieWeikai.github.io/aniya_blog/p/os-flag/</link><pubDate>Sun, 01 Jan 2023 16:38:36 +0800</pubDate><guid>https://XieWeikai.github.io/aniya_blog/p/os-flag/</guid><description>&lt;img src="https://XieWeikai.github.io/aniya_blog/p/os-flag/ostep-fun.jpg" alt="Featured image of post OS flag" />&lt;h1 id="os">OS&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OS on Aniya's Blog</title><link>https://XieWeikai.github.io/aniya_blog/categories/os/</link><description>Recent content in OS on Aniya's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 03 Jan 2023 21:11:14 +0800</lastBuildDate><atom:link href="https://XieWeikai.github.io/aniya_blog/categories/os/index.xml" rel="self" type="application/rss+xml"/><item><title>xv6 环境配置</title><link>https://XieWeikai.github.io/aniya_blog/p/xv6-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/</link><pubDate>Tue, 03 Jan 2023 21:11:14 +0800</pubDate><guid>https://XieWeikai.github.io/aniya_blog/p/xv6-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/</guid><description>&lt;img src="https://XieWeikai.github.io/aniya_blog/p/xv6-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/wallpaper.jpg" alt="Featured image of post xv6 环境配置" />&lt;h1 id="xv6-环境配置">Xv6 环境配置&lt;/h1>
+&lt;p>假期开始，先试着把xv6的实验环境搭建起来，之后做不做实验等到以后再说&amp;hellip;&amp;hellip;&lt;/p>
+&lt;p>根据官方的&lt;a class="link" href="https://pdos.csail.mit.edu/6.828/2020/tools.html" target="_blank" rel="noopener"
+>指导教程&lt;/a>，在macOS下配置实验环境需要做如下准备&lt;/p>
+&lt;ul>
+&lt;li>安装git &lt;em>早就安装好了&lt;/em>&lt;/li>
+&lt;li>安装qemu&lt;/li>
+&lt;li>安装risc-v的工具链&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="安装risc-v工具链">安装risc-v工具链&lt;/h2>
+&lt;p>使用如下命令安装 (见 &lt;a class="link" href="https://github.com/riscv-software-src/homebrew-riscv" target="_blank" rel="noopener"
+>https://github.com/riscv-software-src/homebrew-riscv&lt;/a>)&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">brew tap riscv-software-src/riscv
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">brew install riscv-tools
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在实际安装时发现&lt;code>brew&lt;/code>经常会在某个地方卡住完全不动了(git下载仓库时)，中断后重试几次都是一样。后来在网上发现别人也碰到了类似的问题(见 &lt;a class="link" href="https://zhayujie.com/mit6828-env.html" target="_blank" rel="noopener"
+>https://zhayujie.com/mit6828-env.html&lt;/a>)，按照该博主的说法，我们只需要安装&lt;code>riscv-gnu-toolchain&lt;/code>即可。但下载好源码编译时出现了各种warning，甚至还有error(但貌似还是可以编译出可执行文件的，可能会少一些东西)，根据官网的描述(见 &lt;a class="link" href="https://github.com/riscv-collab/riscv-gnu-toolchain" target="_blank" rel="noopener"
+>https://github.com/riscv-collab/riscv-gnu-toolchain&lt;/a>)，在OS X上编译需要保证文件系统是大小写敏感的，但很可惜macOS使用的文件系统不是大小写敏感的&amp;hellip;&amp;hellip;&lt;/p>
+&lt;p>要解决如上问题可以创建一个大小写敏感的文件系统镜像并挂载到本地的某个目录上，方法见 &lt;a class="link" href="https://github.com/spryker/spryker-docs/blob/master/docs/scos/dev/tutorials-and-howtos/howtos/howto-handle-case-sensitive-file-system-on-mac-os.md" target="_blank" rel="noopener"
+>https://github.com/spryker/spryker-docs/blob/master/docs/scos/dev/tutorials-and-howtos/howtos/howto-handle-case-sensitive-file-system-on-mac-os.md&lt;/a> ，将源码放到该目录下再编译即可。&lt;/p>
+&lt;p>最后感觉太麻烦了，还是决定试一试&lt;code>brew&lt;/code>能否成功，执行如下命令&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">brew tap riscv-software-src/riscv
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">brew install riscv-tools
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>执行开始后本人就去摆烂了，终于在六个小时(左右)后，安装成功完成了&lt;/p>
+&lt;p>&lt;img src="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/xv6-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20230103214417112.png"
+width="2738"
+height="2104"
+srcset="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/xv6-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20230103214417112_hu2c429ec49f7f0c3d86c1e07647eada72_1784538_480x0_resize_box_3.png 480w, https://XieWeikai.github.io/aniya_blog/aniya_blog/p/xv6-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20230103214417112_hu2c429ec49f7f0c3d86c1e07647eada72_1784538_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="image-20230103214417112"
+class="gallery-image"
+data-flex-grow="130"
+data-flex-basis="312px"
+>&lt;/p>
+&lt;p>&lt;img src="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/xv6-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20230103214457754.png"
+width="2406"
+height="926"
+srcset="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/xv6-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20230103214457754_hu49d28df636fdccb342aa056b06223d86_772228_480x0_resize_box_3.png 480w, https://XieWeikai.github.io/aniya_blog/aniya_blog/p/xv6-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20230103214457754_hu49d28df636fdccb342aa056b06223d86_772228_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="image-20230103214457754"
+class="gallery-image"
+data-flex-grow="259"
+data-flex-basis="623px"
+>&lt;/p>
+&lt;p>至此&lt;code>riscv&lt;/code>工具链安装完毕。&lt;/p>
+&lt;hr>
+&lt;h2 id="安装qemu">安装qemu&lt;/h2>
+&lt;p>理论上来说非常简单，一条命令搞定&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">brew install qemu
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>安装完毕，搞定。&lt;/p>
+&lt;hr>
+&lt;p>尝试启动xv6，如下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> path/to/lab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git clone git://g.csail.mit.edu/xv6-labs-2020
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git checkout util
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">make qemu
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在macOS下编译时编译器会报如下错误&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">riscv64-linux-gnu-gcc -Wall -Werror -O -fno-omit-frame-pointer -ggdb -MD -mcmodel&lt;span class="o">=&lt;/span>medany -ffreestanding -fno-common -nostdlib -mno-relax -I. -fno-stack-protector -fno-pie -no-pie -c -o user/sh.o user/sh.c
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">user/sh.c: In &lt;span class="k">function&lt;/span> &lt;span class="s1">&amp;#39;runcmd&amp;#39;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">user/sh.c:58:1: error: infinite recursion detected &lt;span class="o">[&lt;/span>-Werror&lt;span class="o">=&lt;/span>infinite-recursion&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="m">58&lt;/span> &lt;span class="p">|&lt;/span> runcmd&lt;span class="o">(&lt;/span>struct cmd *cmd&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">|&lt;/span> ^~~~~~
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">user/sh.c:89:5: note: recursive call
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="m">89&lt;/span> &lt;span class="p">|&lt;/span> runcmd&lt;span class="o">(&lt;/span>rcmd-&amp;gt;cmd&lt;span class="o">)&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">|&lt;/span> ^~~~~~~~~~~~~~~~~
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">user/sh.c:109:7: note: recursive call
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="m">109&lt;/span> &lt;span class="p">|&lt;/span> runcmd&lt;span class="o">(&lt;/span>pcmd-&amp;gt;left&lt;span class="o">)&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">|&lt;/span> ^~~~~~~~~~~~~~~~~~
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">user/sh.c:116:7: note: recursive call
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="m">116&lt;/span> &lt;span class="p">|&lt;/span> runcmd&lt;span class="o">(&lt;/span>pcmd-&amp;gt;right&lt;span class="o">)&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">|&lt;/span> ^~~~~~~~~~~~~~~~~~~
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">user/sh.c:95:7: note: recursive call
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="m">95&lt;/span> &lt;span class="p">|&lt;/span> runcmd&lt;span class="o">(&lt;/span>lcmd-&amp;gt;left&lt;span class="o">)&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">|&lt;/span> ^~~~~~~~~~~~~~~~~~
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">user/sh.c:97:5: note: recursive call
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="m">97&lt;/span> &lt;span class="p">|&lt;/span> runcmd&lt;span class="o">(&lt;/span>lcmd-&amp;gt;right&lt;span class="o">)&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">|&lt;/span> ^~~~~~~~~~~~~~~~~~~
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">user/sh.c:127:7: note: recursive call
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="m">127&lt;/span> &lt;span class="p">|&lt;/span> runcmd&lt;span class="o">(&lt;/span>bcmd-&amp;gt;cmd&lt;span class="o">)&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">|&lt;/span> ^~~~~~~~~~~~~~~~~
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cc1: all warnings being treated as errors
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">make: *** &lt;span class="o">[&lt;/span>&amp;lt;builtin&amp;gt;: user/sh.o&lt;span class="o">]&lt;/span> Error &lt;span class="m">1&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>将&lt;code>Makefile&lt;/code>中&lt;code>CFLAGS&lt;/code>的&lt;code>-Werror&lt;/code>选项去掉即可。&lt;/p>
+&lt;p>但编译完成后悲惨的发现，启动qemu后程序就卡住了，没有任何交互行为。根据官方&lt;a class="link" href="https://pdos.csail.mit.edu/6.828/2020/tools.html" target="_blank" rel="noopener"
+>指导&lt;/a>的描述，qemu版本太新可能会出现这个问题。经过查找资料，brew貌似没有办法安装旧版本的qemu，只好在&lt;a class="link" href="https://www.qemu.org/download/#source" target="_blank" rel="noopener"
+>qemu官网&lt;/a>上下载qemu 4.2后通过&lt;a class="link" href="https://download.qemu.org/" target="_blank" rel="noopener"
+>源码&lt;/a>来安装qemu了，方法如下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> path/to/lab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mkdir qemu-build &lt;span class="c1"># 在该目录下下载源码并安装&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> qemu-build
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget https://download.qemu.org/qemu-4.2.1.tar.xz &lt;span class="c1"># 下载源码压缩包&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tar xvJf qemu-4.2.1.tar.xz &lt;span class="c1"># 解压&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> qemu-4.2.1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./configure
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">make &lt;span class="c1"># 编译&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>需要花费几十分钟来完成编译，编译后&lt;code>riscv64-softmmu&lt;/code>目录内的&lt;code>qemu-system-riscv64&lt;/code>即为需要的可执行文件，做一个软连接如下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> riscv64-softmmu
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ln -s &lt;span class="k">$(&lt;/span>&lt;span class="nb">pwd&lt;/span>&lt;span class="k">)&lt;/span>/qemu-system-riscv64 /usr/local/bin/qemu-system-riscv64
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>之后重新尝试&lt;code>make qemu&lt;/code>，可以正常启动&lt;code>xv6&lt;/code>操作系统。&lt;/p>
+&lt;hr>
+&lt;h2 id="在docker下配置环境">在docker下配置环境&lt;/h2>
+&lt;p>在docker下拉取ubuntu镜像，以该镜像启动容器&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker run -it --name xv6 &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -v ...:.../path/to/lab &lt;span class="se">\ &lt;/span>&lt;span class="c1"># 挂载本地目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -p ...:... &lt;span class="se">\ &lt;/span>&lt;span class="c1"># 端口映射&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ubuntu:latest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>接着在该容器内先装些最基本的东西 c/c++的工具链(gcc/c++和各种库、包)、git、cmake、等各种东西。&lt;/p>
+&lt;hr>
+&lt;h3 id="安装riscv-tools">安装riscv-tools&lt;/h3>
+&lt;p>根据官方&lt;a class="link" href="https://pdos.csail.mit.edu/6.828/2020/tools.html" target="_blank" rel="noopener"
+>指导&lt;/a>，使用如下命令安装&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">apt-get install gcc-riscv64-linux-gnu binutils-riscv64-linux-gnu
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个安装速度比mac下用brew拉取源码编译快得多了。&lt;/p>
+&lt;p>顺带安装一些可能是调试工具的包&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">apt-get install gdb-multiarch
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;h3 id="安装qemu-1">安装qemu&lt;/h3>
+&lt;p>根据官方&lt;a class="link" href="https://pdos.csail.mit.edu/6.828/2020/tools.html" target="_blank" rel="noopener"
+>指导&lt;/a>，使用如下命令安装&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">apt-get install qemu-system-misc
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>很遗憾，现在的qemu经过两年的改进，和macOS上一样，新版本的qemu启动后就卡死。按照指导，使用如下命令卸载并安装老版本&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">apt-get remove qemu-system-misc &lt;span class="c1"># 卸载&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt-get install qemu-system-misc&lt;span class="o">=&lt;/span>1:4.2-3ubuntu6 &lt;span class="c1"># 安装老版本&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>但今非昔比了，上述安装方法会提示找不到该版本的qemu。&lt;/p>
+&lt;hr>
+&lt;p>按照&lt;a class="link" href="https://pdos.csail.mit.edu/6.828/2020/tools.html" target="_blank" rel="noopener"
+>指导&lt;/a>，也可以进行源码安装&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">wget https://download.qemu.org/qemu-5.1.0.tar.xz &lt;span class="c1"># 下载源码 qemu 5.1.0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tar xf qemu-5.1.0.tar.xz &lt;span class="c1"># 解压&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> qemu-5.1.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./configure --disable-kvm --disable-werror --prefix&lt;span class="o">=&lt;/span>/usr/local --target-list&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;riscv64-softmmu&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">make
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">make install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;p>在ubuntu环境下&lt;code>make qemu&lt;/code>不会报&lt;code>infinite recursion&lt;/code>的错误。&lt;/p>
+&lt;hr>
+&lt;h2 id="尾声">尾声&lt;/h2>
+&lt;p>到此xv6就可以正常启动了，有可能以后还会碰到其他的问题，等到以后再说吧。&lt;/p></description></item><item><title>OS flag</title><link>https://XieWeikai.github.io/aniya_blog/p/os-flag/</link><pubDate>Sun, 01 Jan 2023 16:38:36 +0800</pubDate><guid>https://XieWeikai.github.io/aniya_blog/p/os-flag/</guid><description>&lt;img src="https://XieWeikai.github.io/aniya_blog/p/os-flag/ostep-fun.jpg" alt="Featured image of post OS flag" />&lt;h1 id="os">OS&lt;/h1>
 &lt;p>寒假开始了，如果每天看一点关于操作系统的东西，说不定就可以完成 25%的下个学期的操作系统课程设计呢？&lt;/p></description></item></channel></rss>
