@@ -8,7 +8,6 @@ math:
 license: 
 hidden: false
 comments: true
-draft: true
 ---
 
 # Xv6 环境配置
