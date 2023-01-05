@@ -1,0 +1,632 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="MIT 6.S081 的第一个实验完成过程记录。"><title>OS_util_lab</title><link rel=canonical href=https://XieWeikai.github.io/aniya_blog/p/os_util_lab/><link rel=stylesheet href=/aniya_blog/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css><meta property="og:title" content="OS_util_lab"><meta property="og:description" content="MIT 6.S081 的第一个实验完成过程记录。"><meta property="og:url" content="https://XieWeikai.github.io/aniya_blog/p/os_util_lab/"><meta property="og:site_name" content="Aniya's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:published_time" content="2023-01-05T16:44:26+08:00"><meta property="article:modified_time" content="2023-01-05T16:44:26+08:00"><meta property="og:image" content="https://XieWeikai.github.io/aniya_blog/p/os_util_lab/saber2.jpg"><meta name=twitter:title content="OS_util_lab"><meta name=twitter:description content="MIT 6.S081 的第一个实验完成过程记录。"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://XieWeikai.github.io/aniya_blog/p/os_util_lab/saber2.jpg"><link rel="shortcut icon" href=/aniya_blog/aniya.ico></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/aniya_blog><img src=/aniya_blog/img/aniya_hu746a8935f3131bdc51d8425bcf15aebb_113600_300x0_resize_q75_box.jpeg width=300 height=188 class=site-logo loading=lazy alt=Avatar></a>
+<span class=emoji>🤤</span></figure><div class=site-meta><h1 class=site-name><a href=/aniya_blog>Aniya's Blog</a></h1><h2 class=site-description>Just for fun.</h2></div></header><ol class=social-menu><li><a href=https://github.com/XieWeikai target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://twitter.com target=_blank title=Twitter rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M22 4.01c-1 .49-1.98.689-3 .99-1.121-1.265-2.783-1.335-4.38-.737S11.977 6.323 12 8v1c-3.245.083-6.135-1.395-8-4 0 0-4.182 7.433 4 11-1.872 1.247-3.739 2.088-6 2 3.308 1.803 6.913 2.423 10.034 1.517 3.58-1.04 6.522-3.723 7.651-7.742a13.84 13.84.0 00.497-3.753C20.18 7.773 21.692 5.25 22 4.009z"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/aniya_blog/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/aniya_blog/about/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=/aniya_blog/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/aniya_blog/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><li><a href=/aniya_blog/links/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg><span>Links</span></a></li><div class=menu-bottom-section><li id=i18n-switch><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><select name=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://XieWeikai.github.io/aniya_blog/ selected>中文</option><option value=https://XieWeikai.github.io/aniya_blog/en/>English</option></select></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#准备>准备</a></li><li><a href=#sleep>sleep</a></li><li><a href=#pingpong>pingpong</a></li><li><a href=#primes>primes</a><ol><li><a href=#算法描述>算法描述</a></li><li><a href=#算法实现>算法实现</a></li></ol></li><li><a href=#find>find</a><ol><li><a href=#xv6的目录项>xv6的目录项</a></li><li><a href=#fstat和stat>fstat和stat</a></li><li><a href=#实现>实现</a></li></ol></li><li><a href=#xargs>xargs</a></li><li><a href=#尾声>尾声</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/aniya_blog/p/os_util_lab/><img src=/aniya_blog/p/os_util_lab/saber2_hu583263cbbee05d2c263b501713a891d4_83776_800x0_resize_q75_box.jpg srcset="/aniya_blog/p/os_util_lab/saber2_hu583263cbbee05d2c263b501713a891d4_83776_800x0_resize_q75_box.jpg 800w, /aniya_blog/p/os_util_lab/saber2_hu583263cbbee05d2c263b501713a891d4_83776_1600x0_resize_q75_box.jpg 1600w" width=800 height=469 loading=lazy alt="Featured image of post OS_util_lab"></a></div><div class=article-details><header class=article-category><a href=/aniya_blog/categories/os/ style=background-color:#2a9d8f;color:#fff>OS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/aniya_blog/p/os_util_lab/>OS_util_lab</a></h2><h3 class=article-subtitle>MIT 6.S081 的第一个实验完成过程记录。</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>Jan 05, 2023</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>阅读时长: 7 分钟</time></div></footer></div></header><section class=article-content><h1 id=xv6-util-lab>xv6 util lab</h1><p>在闲暇之余，抽出了一部分时间看了看MIT 6.S081课程的实验一，这个实验可能也许是最简单的一个实验了吧，完全没有涉及到操作系统内部原理相关的知识，只是用xv6的系统调用编写用户态的程序。我也不知道花了不知道多久，断断续续的把实验一干完了。该实验的实验要求见 <a class=link href=https://pdos.csail.mit.edu/6.828/2020/labs/util.html target=_blank rel=noopener>https://pdos.csail.mit.edu/6.828/2020/labs/util.html</a>.</p><hr><h2 id=准备>准备</h2><p>编译并使用qemu模拟启动操作系统方法为</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>make qemu
+</span></span></code></pre></td></tr></table></div></div><p>打分测试的命令如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>make grade
+</span></span></code></pre></td></tr></table></div></div><p>测试某个具体的用例，如测试sleep，方法有两种</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>./grade-lab-util sleep   <span class=c1># 第一种方法</span>
+</span></span><span class=line><span class=cl>make <span class=nv>GRADEFLAGS</span><span class=o>=</span>sleep grade <span class=c1># 第二种方法</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=sleep>sleep</h2><p>该任务非常简单，写一个sleep程序，能通过命令行参数指定sleep的tick数(tick指一个时钟周期)。程序非常简单，在<code>user</code>目录下新建文件<code>sleep.c</code>，编写代码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/types.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/stat.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;user/user.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span> <span class=o>*</span><span class=n>argv</span><span class=p>[])</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span><span class=p>(</span><span class=n>argc</span> <span class=o>&lt;=</span> <span class=mi>1</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>    <span class=nf>write</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span><span class=s>&#34;error: no input from user !</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span><span class=mi>28</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>exit</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nf>sleep</span><span class=p>(</span><span class=nf>atoi</span><span class=p>(</span><span class=n>argv</span><span class=p>[</span><span class=mi>1</span><span class=p>]));</span>   <span class=c1>// sleep 为系统调用  参数为tick数，将命令行参数通过atoi转为整数即可
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nf>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>编写完成后还需要修改<code>Makefile</code>中的<code>UPROGS</code>(这应该是user programs的意思)，添加sleep，如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nv>U</span><span class=o>=</span>user   <span class=c1># 用户态程序目录</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>UPROGS</span><span class=o>=</span><span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_cat<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_echo<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_forktest<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_grep<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_init<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_kill<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_ln<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_ls<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_mkdir<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_rm<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_sh<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_stressfs<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_usertests<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_grind<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_wc<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_zombie<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>	<span class=nv>$U</span>/_sleep   <span class=c1># 这是添加的一行内容</span>
+</span></span></code></pre></td></tr></table></div></div><p>修改后<code>make qemu</code>进入xv6系统可以看到多出了一个sleep程序。该程序能通过打分程序。</p><hr><h2 id=pingpong>pingpong</h2><p>这个也很简单，直接贴上<code>user/pingpong.c</code>代码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/types.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/stat.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;user/user.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span> <span class=o>*</span><span class=n>argv</span><span class=p>[])</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>p1</span><span class=p>[</span><span class=mi>2</span><span class=p>],</span><span class=n>p2</span><span class=p>[</span><span class=mi>2</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>  <span class=kt>char</span> <span class=n>byte</span><span class=p>;</span>   <span class=c1>// byte
+</span></span></span><span class=line><span class=cl><span class=c1></span>	
+</span></span><span class=line><span class=cl>  <span class=c1>// 两条管道 双向通信
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nf>pipe</span><span class=p>(</span><span class=n>p1</span><span class=p>);</span>  <span class=c1>// parent to child
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nf>pipe</span><span class=p>(</span><span class=n>p2</span><span class=p>);</span>  <span class=c1>// child to parent
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span><span class=p>(</span><span class=nf>fork</span><span class=p>()</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>){</span> <span class=c1>// parent
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>close</span><span class=p>(</span><span class=n>p2</span><span class=p>[</span><span class=mi>1</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>close</span><span class=p>(</span><span class=n>p1</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>write</span><span class=p>(</span><span class=n>p1</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span><span class=s>&#34;0&#34;</span><span class=p>,</span><span class=mi>1</span><span class=p>);</span> <span class=c1>// write a byte
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>read</span><span class=p>(</span><span class=n>p2</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span><span class=o>&amp;</span><span class=n>byte</span><span class=p>,</span><span class=mi>1</span><span class=p>);</span>      <span class=c1>// read a byte
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;%d: received pong</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span><span class=nf>getpid</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    <span class=nf>close</span><span class=p>(</span><span class=n>p2</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>close</span><span class=p>(</span><span class=n>p1</span><span class=p>[</span><span class=mi>1</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span><span class=k>else</span><span class=p>{</span> <span class=c1>// child
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>close</span><span class=p>(</span><span class=n>p2</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>close</span><span class=p>(</span><span class=n>p1</span><span class=p>[</span><span class=mi>1</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>read</span><span class=p>(</span><span class=n>p1</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span><span class=o>&amp;</span><span class=n>byte</span><span class=p>,</span><span class=mi>1</span><span class=p>);</span>      <span class=c1>// read a byte
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;%d: received ping</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span><span class=nf>getpid</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    <span class=nf>write</span><span class=p>(</span><span class=n>p2</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span><span class=o>&amp;</span><span class=n>byte</span><span class=p>,</span><span class=mi>1</span><span class=p>);</span> <span class=c1>// write a byte
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>close</span><span class=p>(</span><span class=n>p2</span><span class=p>[</span><span class=mi>1</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>close</span><span class=p>(</span><span class=n>p1</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=primes>primes</h2><p>该任务需要编写程序输出2~35中的所有质数，比较特殊的要求是使用并发的方式来筛选质数，算法描述见 <a class=link href=http://swtch.com/~rsc/thread/ target=_blank rel=noopener>http://swtch.com/~rsc/thread/</a></p><h3 id=算法描述>算法描述</h3><p>用一张图来描述这个筛选质数的并发算法，如下</p><p><img src=/aniya_blog/p/os_util_lab/image-20230105193314093.png width=1046 height=380 srcset="/aniya_blog/p/os_util_lab/image-20230105193314093_hua2c699b5289081dc05adb34a153588e7_40841_480x0_resize_box_3.png 480w, /aniya_blog/p/os_util_lab/image-20230105193314093_hua2c699b5289081dc05adb34a153588e7_40841_1024x0_resize_box_3.png 1024w" loading=lazy alt=算法示意图 class=gallery-image data-flex-grow=275 data-flex-basis=660px></p><p>上图中每一个框框为一个独立执行的例程(可以是process、thread或者别的什么比如golang中的goroutine，总之是可以并发执行的一段程序)，每一个例程可以给右边的邻居发送筛选出来的有可能是质数的数，每一个例程都会进行相应的筛选，选出来的数发给右边的邻居。</p><p>其中第一个例程会收到2-MAX所有的数字，收到的第一个数字当做质数输出(显然第一个数是2，是质数)。第一个例程知道2是质数了，那第一个例程接下来收到的所有数字，如果可以被2整除，那一定不是质数，不能被2整除的有可能是质数，将有可能是质数的数发送给右边的邻居，右边的邻居做进一步的筛选。</p><p>接下来看第二个例程，可以确定的是，第二个例程收到的第一个例程的第一个数字一定也是个质数。为什么呢？第二个例程收到的第一个数字(记作p)一定大于2(大于前一个例程认定了是质数的数)，所有小于p的质数(目前来看就是2)都不是p的因子，那p肯定也是质数。所以第二个例程可以将收到的第一个数认定为质数，将其输出。接下来收到的数字，第二个例程将检测是否能被p整除，若不能才可能是质数，第二个例程会将有可能是质数的数发给右边的邻居（即第三个例程）。显然第三个例程收到的数字一定不会被前两个质数整除，那么第三个例程收到的第一个数字也是个质数&mldr;&mldr;</p><p>用数学归纳法可以容易看出，每个例程收到的第一个数都是质数，且每一个例程都会把可能是质数的数发给右邻居进一步筛选，每一个例程行为的伪代码描述为</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=n>p</span> <span class=o>=</span> <span class=n>get</span> <span class=n>a</span> <span class=n>number</span> <span class=n>from</span> <span class=n>left</span> <span class=n>neighbor</span>
+</span></span><span class=line><span class=cl><span class=n>print</span> <span class=n>p</span>
+</span></span><span class=line><span class=cl><span class=nl>loop</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>n</span> <span class=o>=</span> <span class=n>get</span> <span class=n>a</span> <span class=n>number</span> <span class=n>from</span> <span class=n>left</span> <span class=n>neighbor</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>p</span> <span class=n>does</span> <span class=n>not</span> <span class=n>divide</span> <span class=n>n</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>send</span> <span class=n>n</span> <span class=n>to</span> <span class=n>right</span> <span class=n>neighbor</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=算法实现>算法实现</h3><p>这个任务就要实现这一个算法。在我的实现中，使用进程作为一个独立的例程，主进程负责发送2-35所有的数字，然后开启第一个进程进行筛选，接着每一个进程根据需要判断是否需要开启右邻居，先看主进程代码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span><span class=kt>char</span> <span class=o>*</span><span class=n>argv</span><span class=p>[]){</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>p</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>to</span><span class=p>[</span><span class=mi>2</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>status</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nf>pipe</span><span class=p>(</span><span class=n>to</span><span class=p>);</span>  <span class=c1>// to 是主进程发送2~35所有数字给第一个例程所用的管道
+</span></span></span><span class=line><span class=cl><span class=c1></span>    
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=nf>fork</span><span class=p>()</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>){</span> <span class=c1>// parent
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nf>close</span><span class=p>(</span><span class=n>to</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span> <span class=c1>// do not read   不用的资源尽快close 主进程用该管道不需要读
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>for</span><span class=p>(</span><span class=n>p</span> <span class=o>=</span> <span class=mi>2</span><span class=p>;</span><span class=n>p</span> <span class=o>&lt;=</span> <span class=mi>35</span><span class=p>;</span><span class=n>p</span><span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=nf>write</span><span class=p>(</span><span class=n>to</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span><span class=o>&amp;</span><span class=n>p</span><span class=p>,</span><span class=k>sizeof</span><span class=p>(</span><span class=n>p</span><span class=p>));</span>  <span class=c1>// 将2~35所有数字写入管道
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nf>close</span><span class=p>(</span><span class=n>to</span><span class=p>[</span><span class=mi>1</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span><span class=k>else</span><span class=p>{</span> <span class=c1>// child
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nf>worker</span><span class=p>(</span><span class=n>to</span><span class=p>);</span> <span class=c1>// 子进程，即上面示意图中的例程，接收父进程发送的数字
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nf>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nf>wait</span><span class=p>(</span><span class=o>&amp;</span><span class=n>status</span><span class=p>);</span>  <span class=c1>// 主进程等待子进程结束
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>接着来看看每一个例程的描述函数<code>worker</code>的实现，<code>worker</code>完全按照前文的伪代码实现</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>void</span> <span class=nf>worker</span><span class=p>(</span><span class=kt>int</span> <span class=n>from</span><span class=p>[]){</span> <span class=c1>// 参数为接收左邻居数字的管道
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>forked</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>  <span class=c1>// 标记是否开启过右邻居进程
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>to</span><span class=p>[</span><span class=mi>2</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=nf>close</span><span class=p>(</span><span class=n>from</span><span class=p>[</span><span class=mi>1</span><span class=p>]);</span> <span class=c1>// do not write to from   该管道我只使用读端，不使用写端，没用的资源尽快释放
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>p</span><span class=p>;</span>  <span class=c1>// 接收第一个数字
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>read</span><span class=p>(</span><span class=n>from</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span><span class=o>&amp;</span><span class=n>p</span><span class=p>,</span><span class=k>sizeof</span><span class=p>(</span><span class=n>p</span><span class=p>));</span> <span class=c1>// read first p
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;prime %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span><span class=n>p</span><span class=p>);</span>   <span class=c1>// 第一个数字一定是质数
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>t</span><span class=p>;</span> <span class=c1>// 接收数字
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>while</span><span class=p>(</span><span class=nf>read</span><span class=p>(</span><span class=n>from</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span><span class=o>&amp;</span><span class=n>t</span><span class=p>,</span><span class=k>sizeof</span><span class=p>(</span><span class=n>t</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)){</span> <span class=c1>// 该循环里面不断接收数字，挑出可能是质数的数字发给右邻居
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>if</span><span class=p>(</span><span class=n>t</span> <span class=o>%</span> <span class=n>p</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>){</span>  <span class=c1>// t有可能是质数  这需要发给右邻居了
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=n>forked</span><span class=p>){</span>  <span class=c1>// 还没有右邻居
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=nf>pipe</span><span class=p>(</span><span class=n>to</span><span class=p>);</span> <span class=c1>// 创建和右邻居通信的管道
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=k>if</span><span class=p>(</span><span class=nf>fork</span><span class=p>()</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>){</span> <span class=c1>// parent
+</span></span></span><span class=line><span class=cl><span class=c1></span>                    <span class=nf>close</span><span class=p>(</span><span class=n>to</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span><span class=c1>// 本进程关闭管道读端
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=p>}</span><span class=k>else</span><span class=p>{</span> <span class=c1>// child
+</span></span></span><span class=line><span class=cl><span class=c1></span>                    <span class=nf>worker</span><span class=p>(</span><span class=n>to</span><span class=p>);</span>  <span class=c1>// 子进程从to读取数字
+</span></span></span><span class=line><span class=cl><span class=c1></span>                    <span class=nf>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=n>forked</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>  <span class=c1>// 标记已经开启过子进程
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=nf>write</span><span class=p>(</span><span class=n>to</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span><span class=o>&amp;</span><span class=n>t</span><span class=p>,</span><span class=k>sizeof</span><span class=p>(</span><span class=n>t</span><span class=p>));</span> <span class=c1>// 发送t给子进程
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  	<span class=c1>// 释放资源
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>close</span><span class=p>(</span><span class=n>from</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>close</span><span class=p>(</span><span class=n>to</span><span class=p>[</span><span class=mi>1</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>  	<span class=c1>// 等待右邻居退出
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>status</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nf>wait</span><span class=p>(</span><span class=o>&amp;</span><span class=n>status</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>以上两段代码实现了该任务。</p><hr><p>另外吐槽一下，经过我的尝试，下面这段代码也是可以通过测试的，看来MIT的测试也不过是验证输出罢了&mldr;</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>int</span> <span class=nf>is_prime</span><span class=p>(</span><span class=kt>int</span> <span class=n>n</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>p</span> <span class=o>=</span> <span class=n>n</span><span class=o>/</span><span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>2</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;=</span> <span class=n>p</span><span class=p>;</span><span class=n>i</span><span class=o>++</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span><span class=p>(</span><span class=n>n</span> <span class=o>%</span> <span class=n>p</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span> <span class=o>*</span><span class=n>argv</span><span class=p>[])</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span><span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span><span class=mi>2</span><span class=p>;</span><span class=n>i</span> <span class=o>&lt;=</span> <span class=mi>35</span><span class=p>;</span><span class=n>i</span><span class=o>++</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=nf>is_prime</span><span class=p>(</span><span class=n>i</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;prime %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span><span class=n>i</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nf>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=find>find</h2><p>该任务需要实现一个极简版的<code>find</code>，功能如下所述</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>find &lt;path&gt; &lt;filename&gt;
+</span></span></code></pre></td></tr></table></div></div><p>在<code>&lt;path></code>路径中搜索文件名为<code>&lt;filename></code>的文件，示例如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ make qemu
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>init: starting sh
+</span></span><span class=line><span class=cl>$ <span class=nb>echo</span> &gt; b
+</span></span><span class=line><span class=cl>$ mkdir a
+</span></span><span class=line><span class=cl>$ <span class=nb>echo</span> &gt; a/b
+</span></span><span class=line><span class=cl>$ find . b
+</span></span><span class=line><span class=cl>./b
+</span></span><span class=line><span class=cl>./a/b
+</span></span><span class=line><span class=cl>$
+</span></span></code></pre></td></tr></table></div></div><h3 id=xv6的目录项>xv6的目录项</h3><p>在类unix系统中一般使用基于inode的文件系统(可以参考上交的《现代操作系统:原理与实现》个人感觉挺不错)，在这种文件系统下，<code>inode</code>记录了一个文件的所有内容存在disk的位置，所以知道了<code>inode</code>就知道了某一个文件。在类UNIX系统下目录也是普通的文件，文件内存着一个个目录项，即记录着inode号和其他一些文件信息，在xv6内，目录项如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// kernel/fs.h
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>// Directory is a file containing a sequence of dirent structures.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define DIRSIZ 14
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=n>dirent</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>ushort</span> <span class=n>inum</span><span class=p>;</span>  <span class=c1>// inode number 
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>char</span> <span class=n>name</span><span class=p>[</span><span class=n>DIRSIZ</span><span class=p>];</span>  <span class=c1>// filename
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=fstat和stat>fstat和stat</h3><p>xv6中获取文件信息的系统调用为<code>fstat</code>，使用该函数还封装了一个用户态下的工具函数<code>stat</code>，两个函数原型如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// system call
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>int</span> <span class=nf>fstat</span><span class=p>(</span><span class=kt>int</span> <span class=n>fd</span><span class=p>,</span> <span class=k>struct</span> <span class=n>stat</span><span class=o>*</span><span class=p>);</span> <span class=c1>// fd 为文件描述符
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>// ulib.c
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>int</span> <span class=nf>stat</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span><span class=o>*</span><span class=p>,</span> <span class=k>struct</span> <span class=n>stat</span><span class=o>*</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>stat</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>n</span><span class=p>,</span> <span class=k>struct</span> <span class=n>stat</span> <span class=o>*</span><span class=n>st</span><span class=p>)</span> <span class=c1>// 函数定义
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>fd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>r</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>fd</span> <span class=o>=</span> <span class=nf>open</span><span class=p>(</span><span class=n>n</span><span class=p>,</span> <span class=n>O_RDONLY</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span><span class=p>(</span><span class=n>fd</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>r</span> <span class=o>=</span> <span class=nf>fstat</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>st</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>r</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>其中描述文件信息的结构定义如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#define T_DIR     1   </span><span class=c1>// Directory
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define T_FILE    2   </span><span class=c1>// File
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define T_DEVICE  3   </span><span class=c1>// Device
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=n>stat</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>dev</span><span class=p>;</span>     <span class=c1>// File system&#39;s disk device
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>uint</span> <span class=n>ino</span><span class=p>;</span>    <span class=c1>// Inode number
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>short</span> <span class=n>type</span><span class=p>;</span>  <span class=c1>// Type of file
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>short</span> <span class=n>nlink</span><span class=p>;</span> <span class=c1>// Number of links to file
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>uint64</span> <span class=n>size</span><span class=p>;</span> <span class=c1>// Size of file in bytes
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h3 id=实现>实现</h3><p>有了上面的铺垫，容易编写<code>find</code>代码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>void</span> <span class=nf>find</span><span class=p>(</span><span class=kt>char</span> <span class=o>*</span><span class=n>path</span><span class=p>,</span><span class=kt>char</span> <span class=o>*</span><span class=n>filename</span><span class=p>){</span> <span class=c1>// 该函数在 path 内找 文件名为filename的文件
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>fd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>struct</span> <span class=n>stat</span> <span class=n>st</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>struct</span> <span class=n>dirent</span> <span class=n>de</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>char</span> <span class=n>buff</span><span class=p>[</span><span class=mi>512</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=kt>char</span> <span class=o>*</span><span class=n>p</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nf>strcpy</span><span class=p>(</span><span class=n>buff</span><span class=p>,</span><span class=n>path</span><span class=p>);</span>  <span class=c1>// 路径复制到buff里
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>p</span> <span class=o>=</span> <span class=n>buff</span> <span class=o>+</span> <span class=nf>strlen</span><span class=p>(</span><span class=n>buff</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>*</span><span class=n>p</span> <span class=o>++</span> <span class=o>=</span> <span class=sc>&#39;/&#39;</span><span class=p>;</span> <span class=c1>// path 后加一个 /
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>((</span><span class=n>fd</span> <span class=o>=</span> <span class=nf>open</span><span class=p>(</span><span class=n>path</span><span class=p>,</span><span class=mi>0</span><span class=p>))</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>){</span> <span class=c1>// 打开path这个目录文件
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nf>fprintf</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span><span class=s>&#34;find: cannot open file:%s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span><span class=n>path</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=nf>fstat</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span><span class=o>&amp;</span><span class=n>st</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>){</span>  <span class=c1>// 没能获取文件信息
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nf>fprintf</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span><span class=s>&#34;find: cannot stat</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>st</span><span class=p>.</span><span class=n>type</span> <span class=o>!=</span> <span class=n>T_DIR</span><span class=p>){</span>  <span class=c1>// path 不是目录文件
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nf>fprintf</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span><span class=s>&#34;find: path:%s is not a directory</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span><span class=n>path</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>(</span><span class=nf>read</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span><span class=o>&amp;</span><span class=n>de</span><span class=p>,</span><span class=k>sizeof</span><span class=p>(</span><span class=n>de</span><span class=p>))</span> <span class=o>==</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>de</span><span class=p>)){</span> <span class=c1>// 遍历每一个目录项
+</span></span></span><span class=line><span class=cl><span class=c1></span>      	<span class=c1>// 无效的inode  或者. 和 ..都不继续搜索
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>if</span><span class=p>(</span><span class=n>de</span><span class=p>.</span><span class=n>inum</span> <span class=o>==</span> <span class=mi>0</span> <span class=o>||</span> <span class=nf>strcmp</span><span class=p>(</span><span class=n>de</span><span class=p>.</span><span class=n>name</span><span class=p>,</span><span class=s>&#34;.&#34;</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span> <span class=o>||</span> <span class=nf>strcmp</span><span class=p>(</span><span class=n>de</span><span class=p>.</span><span class=n>name</span><span class=p>,</span><span class=s>&#34;..&#34;</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nf>strcpy</span><span class=p>(</span><span class=n>p</span><span class=p>,</span><span class=n>de</span><span class=p>.</span><span class=n>name</span><span class=p>);</span> <span class=c1>// path/filename
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nf>stat</span><span class=p>(</span><span class=n>buff</span><span class=p>,</span><span class=o>&amp;</span><span class=n>st</span><span class=p>);</span>    <span class=c1>// 获取文件信息
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>switch</span> <span class=p>(</span><span class=n>st</span><span class=p>.</span><span class=n>type</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=nl>T_FILE</span><span class=p>:</span>  <span class=c1>// 普通文件
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=k>if</span><span class=p>(</span><span class=nf>strcmp</span><span class=p>(</span><span class=n>de</span><span class=p>.</span><span class=n>name</span><span class=p>,</span><span class=n>filename</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;%s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span><span class=n>buff</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=nl>T_DIR</span><span class=p>:</span> <span class=c1>// 目录文件则递归搜索
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=nf>find</span><span class=p>(</span><span class=n>buff</span><span class=p>,</span><span class=n>filename</span><span class=p>);</span> <span class=c1>// find recursively
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>default</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>主函数编写如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span><span class=kt>char</span> <span class=o>*</span><span class=n>argv</span><span class=p>[]){</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>argc</span> <span class=o>&lt;=</span> <span class=mi>2</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>        <span class=nf>fprintf</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span><span class=s>&#34;find: no enough argument</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>exit</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nf>find</span><span class=p>(</span><span class=n>argv</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span><span class=n>argv</span><span class=p>[</span><span class=mi>2</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nf>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=xargs>xargs</h2><p>该任务要求实现一个极简版的<code>xargs</code>，貌似也没什么好解释的，就是熟悉<code>fork</code>和<code>exec</code>即可，直接粘代码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/types.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/stat.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;user/user.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/fs.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/param.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=cp>#define EOF -1
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>getchar</span><span class=p>(){</span>
+</span></span><span class=line><span class=cl>    <span class=kt>char</span> <span class=n>ch</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=nf>read</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span><span class=o>&amp;</span><span class=n>ch</span><span class=p>,</span><span class=k>sizeof</span><span class=p>(</span><span class=n>ch</span><span class=p>))</span> <span class=o>&lt;=</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>EOF</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=p>(</span><span class=kt>int</span><span class=p>)</span><span class=n>ch</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>readline</span><span class=p>(</span><span class=kt>char</span> <span class=o>*</span><span class=n>buf</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>ch</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>((</span><span class=n>ch</span> <span class=o>=</span> <span class=nf>getchar</span><span class=p>())</span> <span class=o>!=</span> <span class=sc>&#39;\n&#39;</span> <span class=o>&amp;&amp;</span> <span class=n>ch</span> <span class=o>!=</span> <span class=n>EOF</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=o>*</span><span class=n>buf</span><span class=o>++</span> <span class=o>=</span> <span class=n>ch</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>*</span><span class=n>buf</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>ch</span> <span class=o>==</span> <span class=n>EOF</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>EOF</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span><span class=kt>char</span> <span class=o>*</span><span class=n>argv</span><span class=p>[]){</span>
+</span></span><span class=line><span class=cl>    <span class=kt>char</span> <span class=n>buf</span><span class=p>[</span><span class=mi>512</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>argc</span> <span class=o>&lt;=</span> <span class=mi>1</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>        <span class=nf>fprintf</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span><span class=s>&#34;xarg: no enough arguments</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>exit</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>p</span> <span class=o>=</span> <span class=mi>0</span><span class=p>,</span><span class=n>q</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>char</span> <span class=o>*</span><span class=n>command</span> <span class=o>=</span> <span class=n>argv</span><span class=p>[</span><span class=mi>1</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=kt>char</span> <span class=o>*</span><span class=n>args</span><span class=p>[</span><span class=n>MAXARG</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=n>args</span><span class=p>[</span><span class=n>p</span><span class=o>++</span><span class=p>]</span> <span class=o>=</span> <span class=n>command</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>2</span><span class=p>;</span><span class=n>i</span> <span class=o>&lt;</span> <span class=n>argc</span><span class=p>;</span><span class=n>i</span><span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>args</span><span class=p>[</span><span class=n>p</span><span class=o>++</span><span class=p>]</span> <span class=o>=</span> <span class=n>argv</span><span class=p>[</span><span class=n>i</span><span class=p>];</span> <span class=c1>// arguments from argv
+</span></span></span><span class=line><span class=cl><span class=c1></span>    
+</span></span><span class=line><span class=cl>    <span class=n>q</span> <span class=o>=</span> <span class=n>p</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>(</span><span class=nf>readline</span><span class=p>(</span><span class=n>buf</span><span class=p>)</span> <span class=o>!=</span> <span class=n>EOF</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>        <span class=n>args</span><span class=p>[</span><span class=n>q</span><span class=p>]</span> <span class=o>=</span> <span class=nf>malloc</span><span class=p>(</span><span class=nf>strlen</span><span class=p>(</span><span class=n>buf</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=nf>strcpy</span><span class=p>(</span><span class=n>args</span><span class=p>[</span><span class=n>q</span><span class=o>++</span><span class=p>],</span><span class=n>buf</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>args</span><span class=p>[</span><span class=n>q</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>status</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=nf>fork</span><span class=p>()</span> <span class=o>==</span> <span class=mi>0</span><span class=p>){</span> <span class=c1>// child
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nf>exec</span><span class=p>(</span><span class=n>command</span><span class=p>,</span><span class=n>args</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span><span class=k>else</span><span class=p>{</span> <span class=c1>// father
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nf>wait</span><span class=p>(</span><span class=o>&amp;</span><span class=n>status</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(;</span><span class=n>p</span> <span class=o>&lt;</span> <span class=n>q</span><span class=p>;</span><span class=n>p</span> <span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nf>free</span><span class=p>(</span><span class=n>args</span><span class=p>[</span><span class=n>p</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nf>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=尾声>尾声</h2><p>说实话不知道这个MIT 6.S081还能坚持多久，能坚持一个lab就多坚持一个吧☺️</p><p>代码放到 <a class=link href=https://github.com/XieWeikai/xv6_lab target=_blank rel=noopener>https://github.com/XieWeikai/xv6_lab</a> 的 <code>lab1</code>分支啦，但目前该仓库还是private的，等到这个课程真的完成的差不多了再准备公开了哈哈哈。</p></section><footer class=article-footer><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/aniya_blog/p/xv6-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/><div class=article-image><img src=/aniya_blog/p/xv6-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/wallpaper.74540f2c69533900a024c238ae79d45e_hu0ff37ebbb98d2b42bafbb67ed8d5243a_153541_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post xv6 环境配置" data-hash="md5-dFQPLGlTOQCgJMI4rnnUXg=="></div><div class=article-details><h2 class=article-title>xv6 环境配置</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2020 -
+2023 Aniya's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/aniya_blog/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
