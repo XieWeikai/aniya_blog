@@ -1,0 +1,1260 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="MIT 6.S081 的第二次实验，编写系统调用，具体实验过程。"><title>lab2: system calls</title><link rel=canonical href=https://XieWeikai.github.io/aniya_blog/p/lab2-system-calls/><link rel=stylesheet href=/aniya_blog/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css><meta property="og:title" content="lab2: system calls"><meta property="og:description" content="MIT 6.S081 的第二次实验，编写系统调用，具体实验过程。"><meta property="og:url" content="https://XieWeikai.github.io/aniya_blog/p/lab2-system-calls/"><meta property="og:site_name" content="Aniya's Blog"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:published_time" content="2023-01-06T22:37:47+08:00"><meta property="article:modified_time" content="2023-01-06T22:37:47+08:00"><meta property="og:image" content="https://XieWeikai.github.io/aniya_blog/p/lab2-system-calls/cover.jpg"><meta name=twitter:title content="lab2: system calls"><meta name=twitter:description content="MIT 6.S081 的第二次实验，编写系统调用，具体实验过程。"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://XieWeikai.github.io/aniya_blog/p/lab2-system-calls/cover.jpg"><link rel="shortcut icon" href=/aniya_blog/aniya.ico></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/aniya_blog><img src=/aniya_blog/img/aniya_hu746a8935f3131bdc51d8425bcf15aebb_113600_300x0_resize_q75_box.jpeg width=300 height=188 class=site-logo loading=lazy alt=Avatar></a>
+<span class=emoji>🤤</span></figure><div class=site-meta><h1 class=site-name><a href=/aniya_blog>Aniya's Blog</a></h1><h2 class=site-description>Just for fun.</h2></div></header><ol class=social-menu><li><a href=https://github.com/XieWeikai target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://twitter.com target=_blank title=Twitter rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M22 4.01c-1 .49-1.98.689-3 .99-1.121-1.265-2.783-1.335-4.38-.737S11.977 6.323 12 8v1c-3.245.083-6.135-1.395-8-4 0 0-4.182 7.433 4 11-1.872 1.247-3.739 2.088-6 2 3.308 1.803 6.913 2.423 10.034 1.517 3.58-1.04 6.522-3.723 7.651-7.742a13.84 13.84.0 00.497-3.753C20.18 7.773 21.692 5.25 22 4.009z"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/aniya_blog/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>Home</span></a></li><li><a href=/aniya_blog/about/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>About</span></a></li><li><a href=/aniya_blog/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archives</span></a></li><li><a href=/aniya_blog/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>Search</span></a></li><li><a href=/aniya_blog/links/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg><span>Links</span></a></li><div class=menu-bottom-section><li id=i18n-switch><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><select name=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://XieWeikai.github.io/aniya_blog/ selected>中文</option><option value=https://XieWeikai.github.io/aniya_blog/en/>English</option></select></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#准备>准备</a><ol><li><a href=#启动流程概述>启动流程概述</a></li><li><a href=#系统调用>系统调用</a></li><li><a href=#获取参数>获取参数</a></li><li><a href=#用户态stub>用户态stub</a></li><li><a href=#用户态和内核态数据传输>用户态和内核态数据传输</a></li></ol></li><li><a href=#实验>实验</a><ol><li><a href=#trace>trace</a></li><li><a href=#sysinfo>sysinfo</a></li></ol></li><li><a href=#尾声>尾声</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/aniya_blog/p/lab2-system-calls/><img src=/aniya_blog/p/lab2-system-calls/cover_hu7ace472778f385b50e7c8f287dbb6c46_2544271_800x0_resize_q75_box.jpg srcset="/aniya_blog/p/lab2-system-calls/cover_hu7ace472778f385b50e7c8f287dbb6c46_2544271_800x0_resize_q75_box.jpg 800w, /aniya_blog/p/lab2-system-calls/cover_hu7ace472778f385b50e7c8f287dbb6c46_2544271_1600x0_resize_q75_box.jpg 1600w" width=800 height=559 loading=lazy alt="Featured image of post lab2: system calls"></a></div><div class=article-details><header class=article-category><a href=/aniya_blog/categories/os/ style=background-color:#2a9d8f;color:#fff>OS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/aniya_blog/p/lab2-system-calls/>lab2: system calls</a></h2><h3 class=article-subtitle>MIT 6.S081 的第二次实验，编写系统调用，具体实验过程。</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>Jan 06, 2023</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>阅读时长: 14 分钟</time></div></footer></div></header><section class=article-content><h1 id=os-lab-syscall>OS lab syscall</h1><p>时隔一天，居然又象征性的完成了一个实验😋</p><p>本次实验需要在xv6系统内额外添加两个系统调用，分别是<code>trace</code>和<code>sysinfo</code>，<code>trace</code>用于跟踪某个进程使用系统调用的情况，<code>sysinfo</code>用于查看系统内空闲内存和进程个数。</p><p>实验的官方指导见 <a class=link href=https://pdos.csail.mit.edu/6.828/2020/labs/syscall.html target=_blank rel=noopener>https://pdos.csail.mit.edu/6.828/2020/labs/syscall.html</a> 。</p><h2 id=准备>准备</h2><p>官方<a class=link href=https://pdos.csail.mit.edu/6.828/2020/labs/syscall.html target=_blank rel=noopener>指导</a>中的前置要求是</p><blockquote><p>Before you start coding, read Chapter 2 of the <a class=link href=https://pdos.csail.mit.edu/6.828/2020/xv6/book-riscv-rev1.pdf target=_blank rel=noopener>xv6 book</a>, and Sections 4.3 and 4.4 of Chapter 4, and related source files:</p><ul><li>The user-space code for systems calls is in <code>user/user.h</code> and <code>user/usys.pl</code>.</li><li>The kernel-space code is <code>kernel/syscall.h</code>, <code>kernel/syscall.c</code>.</li><li>The process-related code is <code>kernel/proc.h</code> and <code>kernel/proc.c</code>.</li></ul></blockquote><p>指导书中的Chapter 2描述了操作系统的组织结构，内容大概是简单讲了一下操作系统的功能作用、操作系统为什么重要、有哪些组织操作系统各个部分的方法等等。</p><p>在Chapter 2的最后大概讲了讲xv6的启动过程。</p><h3 id=启动流程概述>启动流程概述</h3><p>qemu模拟的机器启动时首先执行ROM中的程序，这个程序的作用应该就是将启动区的一部分代码载入内存并转交CPU使用权到载入的代码，xv6最初的代码见<code>kernel/entry.S:6</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>				# qemu -kernel loads the kernel at 0x80000000
+</span></span><span class=line><span class=cl>        # and causes each CPU to jump there.
+</span></span><span class=line><span class=cl>        # kernel.ld causes the following code to
+</span></span><span class=line><span class=cl>        # be placed at 0x80000000.
+</span></span><span class=line><span class=cl>.section .text
+</span></span><span class=line><span class=cl>_entry:
+</span></span><span class=line><span class=cl>				# set up a stack for C.
+</span></span><span class=line><span class=cl>        # stack0 is declared in start.c,
+</span></span><span class=line><span class=cl>        # with a 4096-byte stack per CPU.
+</span></span><span class=line><span class=cl>        # sp = stack0 + (hartid * 4096)
+</span></span><span class=line><span class=cl>        la sp, stack0
+</span></span><span class=line><span class=cl>        li a0, 1024*4
+</span></span><span class=line><span class=cl>				csrr a1, mhartid
+</span></span><span class=line><span class=cl>        addi a1, a1, 1
+</span></span><span class=line><span class=cl>        mul a0, a0, a1
+</span></span><span class=line><span class=cl>        add sp, sp, a0
+</span></span><span class=line><span class=cl>				# jump to start() in start.c
+</span></span><span class=line><span class=cl>        call start
+</span></span><span class=line><span class=cl>spin:
+</span></span><span class=line><span class=cl>        j spin
+</span></span></code></pre></td></tr></table></div></div><p>上面的汇编代码设置好栈顶寄存器后将跳转到 <code>kernel/start.c</code>中的<code>start</code>函数，注意在机器刚启动时处在<code>machine mode</code>，该模式下拥有所有的权限。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// entry.S jumps here in machine mode on stack0.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span>
+</span></span><span class=line><span class=cl><span class=nf>start</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// set M Previous Privilege mode to Supervisor, for mret.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>unsigned</span> <span class=kt>long</span> <span class=n>x</span> <span class=o>=</span> <span class=nf>r_mstatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=n>x</span> <span class=o>&amp;=</span> <span class=o>~</span><span class=n>MSTATUS_MPP_MASK</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>x</span> <span class=o>|=</span> <span class=n>MSTATUS_MPP_S</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=nf>w_mstatus</span><span class=p>(</span><span class=n>x</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// set M Exception Program Counter to main, for mret.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>// requires gcc -mcmodel=medany
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nf>w_mepc</span><span class=p>((</span><span class=n>uint64</span><span class=p>)</span><span class=n>main</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// disable paging for now.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nf>w_satp</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// delegate all interrupts and exceptions to supervisor mode.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nf>w_medeleg</span><span class=p>(</span><span class=mh>0xffff</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>w_mideleg</span><span class=p>(</span><span class=mh>0xffff</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>w_sie</span><span class=p>(</span><span class=nf>r_sie</span><span class=p>()</span> <span class=o>|</span> <span class=n>SIE_SEIE</span> <span class=o>|</span> <span class=n>SIE_STIE</span> <span class=o>|</span> <span class=n>SIE_SSIE</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// ask for clock interrupts.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nf>timerinit</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// keep each CPU&#39;s hartid in its tp register, for cpuid().
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>id</span> <span class=o>=</span> <span class=nf>r_mhartid</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=nf>w_tp</span><span class=p>(</span><span class=n>id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// switch to supervisor mode and jump to main().
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>asm</span> <span class=k>volatile</span><span class=p>(</span><span class=s>&#34;mret&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面的代码对机器进行了一些设置，没了解过riscv的处理器，随着实验的深入应该也许会了解更多吧，上面代码的最后一句，使用汇编<code>mret</code>，这一般用于<code>supervisor mode</code>调用<code>machine mode</code>的代码后从<code>machine mode</code>返回<code>supervisor mode</code>，在这个代码里通过<code>mret</code>进入<code>supervisor mode</code>，也就是操作系统内核运行的模式，在<code>start</code>函数前面一些代码已经将返回地址设为了<code>main</code>，故<code>mret</code>会转到<code>main</code>函数。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// start() jumps here in supervisor mode on all CPUs.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span>
+</span></span><span class=line><span class=cl><span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span><span class=p>(</span><span class=nf>cpuid</span><span class=p>()</span> <span class=o>==</span> <span class=mi>0</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>    <span class=nf>consoleinit</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=nf>printfinit</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;xv6 kernel is booting</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>kinit</span><span class=p>();</span>         <span class=c1>// physical page allocator
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>kvminit</span><span class=p>();</span>       <span class=c1>// create kernel page table
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>kvminithart</span><span class=p>();</span>   <span class=c1>// turn on paging
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>procinit</span><span class=p>();</span>      <span class=c1>// process table
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>trapinit</span><span class=p>();</span>      <span class=c1>// trap vectors
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>trapinithart</span><span class=p>();</span>  <span class=c1>// install kernel trap vector
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>plicinit</span><span class=p>();</span>      <span class=c1>// set up interrupt controller
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>plicinithart</span><span class=p>();</span>  <span class=c1>// ask PLIC for device interrupts
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>binit</span><span class=p>();</span>         <span class=c1>// buffer cache
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>iinit</span><span class=p>();</span>         <span class=c1>// inode cache
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>fileinit</span><span class=p>();</span>      <span class=c1>// file table
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>virtio_disk_init</span><span class=p>();</span> <span class=c1>// emulated hard disk
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>userinit</span><span class=p>();</span>      <span class=c1>// first user process
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>__sync_synchronize</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=n>started</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>(</span><span class=n>started</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nf>__sync_synchronize</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;hart %d starting</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=nf>cpuid</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    <span class=nf>kvminithart</span><span class=p>();</span>    <span class=c1>// turn on paging
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>trapinithart</span><span class=p>();</span>   <span class=c1>// install kernel trap vector
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>plicinithart</span><span class=p>();</span>   <span class=c1>// ask PLIC for device interrupts
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nf>scheduler</span><span class=p>();</span>        
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>main</code>函数内进行了一堆初始化操作，最后调用了<code>userinit()</code>函数启动第一个用户进程，该函数代码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// Set up first user process.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span>
+</span></span><span class=line><span class=cl><span class=nf>userinit</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>proc</span> <span class=o>*</span><span class=n>p</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>p</span> <span class=o>=</span> <span class=nf>allocproc</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=n>initproc</span> <span class=o>=</span> <span class=n>p</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=c1>// allocate one user page and copy init&#39;s instructions
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>// and data into it.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nf>uvminit</span><span class=p>(</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>pagetable</span><span class=p>,</span> <span class=n>initcode</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>initcode</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>  <span class=n>p</span><span class=o>-&gt;</span><span class=n>sz</span> <span class=o>=</span> <span class=n>PGSIZE</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// prepare for the very first &#34;return&#34; from kernel to user.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>epc</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>      <span class=c1>// user program counter
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>sp</span> <span class=o>=</span> <span class=n>PGSIZE</span><span class=p>;</span>  <span class=c1>// user stack pointer
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=nf>safestrcpy</span><span class=p>(</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>name</span><span class=p>,</span> <span class=s>&#34;initcode&#34;</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>name</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>  <span class=n>p</span><span class=o>-&gt;</span><span class=n>cwd</span> <span class=o>=</span> <span class=nf>namei</span><span class=p>(</span><span class=s>&#34;/&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>p</span><span class=o>-&gt;</span><span class=n>state</span> <span class=o>=</span> <span class=n>RUNNABLE</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nf>release</span><span class=p>(</span><span class=o>&amp;</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面的代码在对进程一些必要的东西初始化后启动了<code>initcode</code>这一个用户进程，该进程是用汇编写的，代码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>#include &#34;syscall.h&#34;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl># exec(init, argv)
+</span></span><span class=line><span class=cl>.globl start
+</span></span><span class=line><span class=cl>start:
+</span></span><span class=line><span class=cl>        la a0, init
+</span></span><span class=line><span class=cl>        la a1, argv
+</span></span><span class=line><span class=cl>        li a7, SYS_exec
+</span></span><span class=line><span class=cl>        ecall
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl># for(;;) exit();
+</span></span><span class=line><span class=cl>exit:
+</span></span><span class=line><span class=cl>        li a7, SYS_exit
+</span></span><span class=line><span class=cl>        ecall
+</span></span><span class=line><span class=cl>        jal exit
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl># char init[] = &#34;/init\0&#34;;
+</span></span><span class=line><span class=cl>init:
+</span></span><span class=line><span class=cl>  .string &#34;/init\0&#34;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl># char *argv[] = { init, 0 };
+</span></span><span class=line><span class=cl>.p2align 2
+</span></span><span class=line><span class=cl>argv:
+</span></span><span class=line><span class=cl>  .long init
+</span></span><span class=line><span class=cl>  .long 0
+</span></span></code></pre></td></tr></table></div></div><p>上面的代码相当于执行了c程序</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>void</span> <span class=nf>start</span><span class=p>(){</span>
+</span></span><span class=line><span class=cl>  <span class=kt>char</span> <span class=o>*</span><span class=n>init</span> <span class=o>=</span> <span class=s>&#34;/init&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kt>char</span> <span class=o>*</span><span class=n>argv</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span><span class=n>init</span><span class=p>,</span><span class=mi>0</span><span class=p>};</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=nf>exec</span><span class=p>(</span><span class=n>init</span><span class=p>,</span><span class=n>argv</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span><span class=p>(;;)</span>
+</span></span><span class=line><span class=cl>    <span class=nf>exit</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>这个<code>/init</code>程序见源码<code>user/init.c</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// init: The initial user-level program
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/types.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/stat.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/spinlock.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/sleeplock.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/fs.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/file.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;user/user.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;kernel/fcntl.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=kt>char</span> <span class=o>*</span><span class=n>argv</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span> <span class=s>&#34;sh&#34;</span><span class=p>,</span> <span class=mi>0</span> <span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>pid</span><span class=p>,</span> <span class=n>wpid</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>if</span><span class=p>(</span><span class=nf>open</span><span class=p>(</span><span class=s>&#34;console&#34;</span><span class=p>,</span> <span class=n>O_RDWR</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>    <span class=nf>mknod</span><span class=p>(</span><span class=s>&#34;console&#34;</span><span class=p>,</span> <span class=n>CONSOLE</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>open</span><span class=p>(</span><span class=s>&#34;console&#34;</span><span class=p>,</span> <span class=n>O_RDWR</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nf>dup</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>  <span class=c1>// stdout
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nf>dup</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>  <span class=c1>// stderr
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span><span class=p>(;;){</span>
+</span></span><span class=line><span class=cl>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;init: starting sh</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>pid</span> <span class=o>=</span> <span class=nf>fork</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>pid</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>      <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;init: fork failed</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nf>exit</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>pid</span> <span class=o>==</span> <span class=mi>0</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>      <span class=nf>exec</span><span class=p>(</span><span class=s>&#34;sh&#34;</span><span class=p>,</span> <span class=n>argv</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;init: exec sh failed</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nf>exit</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(;;){</span>
+</span></span><span class=line><span class=cl>      <span class=c1>// this call to wait() returns if the shell exits,
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=c1>// or if a parentless process exits.
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=n>wpid</span> <span class=o>=</span> <span class=nf>wait</span><span class=p>((</span><span class=kt>int</span> <span class=o>*</span><span class=p>)</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span><span class=p>(</span><span class=n>wpid</span> <span class=o>==</span> <span class=n>pid</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// the shell exited; restart it.
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span> <span class=k>else</span> <span class=k>if</span><span class=p>(</span><span class=n>wpid</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>        <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;init: wait returned an error</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>exit</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// it was a parentless process; do nothing.
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>引用指导书的话，<code>init</code>程序干的事为</p><blockquote><p>Init (user/init.c:15) creates a new console device fifile if needed and then opens it as fifile descriptors 0, 1, and 2. Then it starts a shell on the console. The system is up.</p></blockquote><p>xv6大致的启动流程到此结束，其实还是比较模糊的，细节应该会在后面的实验逐渐展开 &mldr; 吧🤣</p><hr><h3 id=系统调用>系统调用</h3><p>在实验指导<a class=link href=https://pdos.csail.mit.edu/6.828/2020/labs/syscall.html target=_blank rel=noopener>网站</a>中还提到要看指导书的4.3和4.4节，这两节象征性的讲了下系统调用相关的代码，细节不表，大概流程在本节粗略的解释一下。</p><p>首先在上一节中其实看到了汇编如何调用exec系统调用的，如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>la a0, init
+</span></span><span class=line><span class=cl>la a1, argv
+</span></span><span class=line><span class=cl>li a7, SYS_exec
+</span></span><span class=line><span class=cl>ecall
+</span></span></code></pre></td></tr></table></div></div><p>riscv内有a0-a7这几个寄存器（按照惯例）用于传递参数(a就是arg)，exec需要两个参数，这两个参数分别存入a0,a1中，a7用于存放系统调用号。ecall指令会陷入内核(具体哪里以后应该会知道的)，陷入内核后依次执行<code>uservec</code>、<code>usertrap</code>然后是<code>syscall</code>，最后这个<code>syscall</code>函数真正调用了系统调用。该函数见<code>kernel/syscall.c</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>void</span>
+</span></span><span class=line><span class=cl><span class=nf>syscall</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>num</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>proc</span> <span class=o>*</span><span class=n>p</span> <span class=o>=</span> <span class=nf>myproc</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>num</span> <span class=o>=</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a7</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span><span class=p>(</span><span class=n>num</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=o>&amp;&amp;</span> <span class=n>num</span> <span class=o>&lt;</span> <span class=nf>NELEM</span><span class=p>(</span><span class=n>syscalls</span><span class=p>)</span> <span class=o>&amp;&amp;</span> <span class=n>syscalls</span><span class=p>[</span><span class=n>num</span><span class=p>])</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a0</span> <span class=o>=</span> <span class=n>syscalls</span><span class=p>[</span><span class=n>num</span><span class=p>]();</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;%d %s: unknown sys call %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>p</span><span class=o>-&gt;</span><span class=n>pid</span><span class=p>,</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>name</span><span class=p>,</span> <span class=n>num</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a0</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>先注意上面的<code>myproc</code>，该函数返回一个进程(使用系统调用的进程)相关的结构体(应该就是理论学习中的PCB了吧)，该结构体定义如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// Per-process state
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>struct</span> <span class=n>proc</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>spinlock</span> <span class=n>lock</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// p-&gt;lock must be held when using these:
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>enum</span> <span class=n>procstate</span> <span class=n>state</span><span class=p>;</span>        <span class=c1>// Process state
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>struct</span> <span class=n>proc</span> <span class=o>*</span><span class=n>parent</span><span class=p>;</span>         <span class=c1>// Parent process
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>void</span> <span class=o>*</span><span class=n>chan</span><span class=p>;</span>                  <span class=c1>// If non-zero, sleeping on chan
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>killed</span><span class=p>;</span>                  <span class=c1>// If non-zero, have been killed
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>xstate</span><span class=p>;</span>                  <span class=c1>// Exit status to be returned to parent&#39;s wait
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>pid</span><span class=p>;</span>                     <span class=c1>// Process ID
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=c1>// these are private to the process, so p-&gt;lock need not be held.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>uint64</span> <span class=n>kstack</span><span class=p>;</span>               <span class=c1>// Virtual address of kernel stack
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>uint64</span> <span class=n>sz</span><span class=p>;</span>                   <span class=c1>// Size of process memory (bytes)
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>pagetable_t</span> <span class=n>pagetable</span><span class=p>;</span>       <span class=c1>// User page table
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>struct</span> <span class=n>trapframe</span> <span class=o>*</span><span class=n>trapframe</span><span class=p>;</span> <span class=c1>// data page for trampoline.S
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>struct</span> <span class=n>context</span> <span class=n>context</span><span class=p>;</span>      <span class=c1>// swtch() here to run process
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>struct</span> <span class=n>file</span> <span class=o>*</span><span class=n>ofile</span><span class=p>[</span><span class=n>NOFILE</span><span class=p>];</span>  <span class=c1>// Open files
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>struct</span> <span class=n>inode</span> <span class=o>*</span><span class=n>cwd</span><span class=p>;</span>           <span class=c1>// Current directory
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>char</span> <span class=n>name</span><span class=p>[</span><span class=mi>16</span><span class=p>];</span>               <span class=c1>// Process name (debugging)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面结构中的<code>trapframe</code>存着该进程的寄存器状态和其他一些信息，在回过头来看<code>syscall</code>中的如下代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>int</span> <span class=n>num</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=n>proc</span> <span class=o>*</span><span class=n>p</span> <span class=o>=</span> <span class=nf>myproc</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>num</span> <span class=o>=</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a7</span><span class=p>;</span>  <span class=c1>// a7存的是调用号，如前面汇编语言调用系统调用所示
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>if</span><span class=p>(</span><span class=n>num</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=o>&amp;&amp;</span> <span class=n>num</span> <span class=o>&lt;</span> <span class=nf>NELEM</span><span class=p>(</span><span class=n>syscalls</span><span class=p>)</span> <span class=o>&amp;&amp;</span> <span class=n>syscalls</span><span class=p>[</span><span class=n>num</span><span class=p>])</span> <span class=p>{</span> <span class=c1>// 调用号满足一定条件才能调用系统调用
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a0</span> <span class=o>=</span> <span class=n>syscalls</span><span class=p>[</span><span class=n>num</span><span class=p>]();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>解释见注释，再来看看<code>syscalls</code>这个变量</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=k>static</span> <span class=nf>uint64</span> <span class=p>(</span><span class=o>*</span><span class=n>syscalls</span><span class=p>[])(</span><span class=kt>void</span><span class=p>)</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_fork</span><span class=p>]</span>    <span class=n>sys_fork</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_exit</span><span class=p>]</span>    <span class=n>sys_exit</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_wait</span><span class=p>]</span>    <span class=n>sys_wait</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_pipe</span><span class=p>]</span>    <span class=n>sys_pipe</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_read</span><span class=p>]</span>    <span class=n>sys_read</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_kill</span><span class=p>]</span>    <span class=n>sys_kill</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_exec</span><span class=p>]</span>    <span class=n>sys_exec</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_fstat</span><span class=p>]</span>   <span class=n>sys_fstat</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_chdir</span><span class=p>]</span>   <span class=n>sys_chdir</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_dup</span><span class=p>]</span>     <span class=n>sys_dup</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_getpid</span><span class=p>]</span>  <span class=n>sys_getpid</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_sbrk</span><span class=p>]</span>    <span class=n>sys_sbrk</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_sleep</span><span class=p>]</span>   <span class=n>sys_sleep</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_uptime</span><span class=p>]</span>  <span class=n>sys_uptime</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_open</span><span class=p>]</span>    <span class=n>sys_open</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_write</span><span class=p>]</span>   <span class=n>sys_write</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_mknod</span><span class=p>]</span>   <span class=n>sys_mknod</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_unlink</span><span class=p>]</span>  <span class=n>sys_unlink</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_link</span><span class=p>]</span>    <span class=n>sys_link</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_mkdir</span><span class=p>]</span>   <span class=n>sys_mkdir</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>SYS_close</span><span class=p>]</span>   <span class=n>sys_close</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>这是一个指向函数的指针的数组，指向的函数形如<code>uint64 func_name(void )</code>，这一段代码给该数组进行初始化，其中<code>sys_fork</code>，<code>sys_exit</code>之类的为具体的函数(函数就是一堆指令，函数名其实就是这一堆指令的首地址)，<code>SYS_fork</code>之类的表明数组下标，这些宏定义在<code>syscall.h</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// System call numbers
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define SYS_fork    1
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_exit    2
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_wait    3
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_pipe    4
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_read    5
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_kill    6
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_exec    7
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_fstat   8
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_chdir   9
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_dup    10
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_getpid 11
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_sbrk   12
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_sleep  13
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_uptime 14
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_open   15
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_write  16
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_mknod  17
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_unlink 18
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_link   19
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_mkdir  20
+</span></span></span><span class=line><span class=cl><span class=cp>#define SYS_close  21
+</span></span></span></code></pre></td></tr></table></div></div><hr><h3 id=获取参数>获取参数</h3><p>上面看到了系统调用的过程，<code>syscall</code>实际上是根据<code>a7</code>中的调用号来选择某个具体的实现系统调用的函数来完成系统调用的。上一小节看到，<code>syscall</code>调用的函数原型为<code>uint64 func_name(void)</code>，那这些函数如何拿到用户传递的参数呢？</p><p>实际上通过陷入系统调用的代码就可以看出来了</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl># 调用 exec(init,argv)
+</span></span><span class=line><span class=cl>la a0, init
+</span></span><span class=line><span class=cl>la a1, argv
+</span></span><span class=line><span class=cl>li a7, SYS_exec
+</span></span><span class=line><span class=cl>ecall
+</span></span></code></pre></td></tr></table></div></div><p>参数存在了该进程的a0-a5寄存器中，而通过前文可以看到，可以通过<code>myproc</code>拿到用户进程的<code>PCB</code>，也就是一个<code>struct proc *</code>，该结构内的<code>trapframe</code>内有用户进程的寄存器状态，比如<code>exec</code>要拿到第一个参数，只需要拿到a0即可，如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=k>struct</span> <span class=n>proc</span> <span class=o>*</span><span class=n>p</span> <span class=o>=</span> <span class=nf>myproc</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a0</span>  <span class=c1>//  这个值就是第一个参数
+</span></span></span></code></pre></td></tr></table></div></div><p>在<code>kernel/syscall.c</code>中已经给我们封装好了相关的函数，如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=k>static</span> <span class=n>uint64</span>
+</span></span><span class=line><span class=cl><span class=nf>argraw</span><span class=p>(</span><span class=kt>int</span> <span class=n>n</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>proc</span> <span class=o>*</span><span class=n>p</span> <span class=o>=</span> <span class=nf>myproc</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=k>switch</span> <span class=p>(</span><span class=n>n</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>case</span> <span class=mi>0</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>case</span> <span class=mi>1</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>case</span> <span class=mi>2</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>case</span> <span class=mi>3</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>case</span> <span class=mi>4</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a4</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>case</span> <span class=mi>5</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nf>panic</span><span class=p>(</span><span class=s>&#34;argraw&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>可以看到，调用 <code>argraw(n)</code>可以拿到第n个参数，也就是an寄存器的值，在该文件中还进一步封装了另外几个函数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// Fetch the nth 32-bit system call argument.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=nf>argint</span><span class=p>(</span><span class=kt>int</span> <span class=n>n</span><span class=p>,</span> <span class=kt>int</span> <span class=o>*</span><span class=n>ip</span><span class=p>)</span> <span class=c1>// 获取整数类型的参数
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=o>*</span><span class=n>ip</span> <span class=o>=</span> <span class=nf>argraw</span><span class=p>(</span><span class=n>n</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Retrieve an argument as a pointer.
+</span></span></span><span class=line><span class=cl><span class=c1>// Doesn&#39;t check for legality, since
+</span></span></span><span class=line><span class=cl><span class=c1>// copyin/copyout will do that.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=nf>argaddr</span><span class=p>(</span><span class=kt>int</span> <span class=n>n</span><span class=p>,</span> <span class=n>uint64</span> <span class=o>*</span><span class=n>ip</span><span class=p>)</span>  <span class=c1>// 获取地址(指针类型的参数)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=o>*</span><span class=n>ip</span> <span class=o>=</span> <span class=nf>argraw</span><span class=p>(</span><span class=n>n</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Fetch the nth word-sized system call argument as a null-terminated string.
+</span></span></span><span class=line><span class=cl><span class=c1>// Copies into buf, at most max.
+</span></span></span><span class=line><span class=cl><span class=c1>// Returns string length if OK (including nul), -1 if error.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=nf>argstr</span><span class=p>(</span><span class=kt>int</span> <span class=n>n</span><span class=p>,</span> <span class=kt>char</span> <span class=o>*</span><span class=n>buf</span><span class=p>,</span> <span class=kt>int</span> <span class=n>max</span><span class=p>)</span>  <span class=c1>// 获取字符串类型的参数
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>uint64</span> <span class=n>addr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span><span class=p>(</span><span class=nf>argaddr</span><span class=p>(</span><span class=n>n</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>addr</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// fetchstr 从用户态的地址处将字符串取出复制到内核态中的buf内 内核态和用户态
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>// 的地址空间不一样(页表不同)
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>return</span> <span class=nf>fetchstr</span><span class=p>(</span><span class=n>addr</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=n>max</span><span class=p>);</span> 
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>具体功能见注释。</p><hr><h3 id=用户态stub>用户态stub</h3><p>作为用户，如果希望进行系统调用，肯定不希望写汇编来调用，那么在用户态下需要封装一层函数来陷入内核进行系统调用，如用户希望调用文件相关的系统调用只需按照下面的代码书写</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=n>fd</span> <span class=o>=</span> <span class=nf>open</span><span class=p>(</span><span class=s>&#34;hello.txt&#34;</span><span class=p>,</span><span class=n>O_CREAT</span><span class=o>|</span><span class=n>O_WRONLY</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>write</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span><span class=s>&#34;Hello,xv6!&#34;</span><span class=p>,</span><span class=mi>10</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>那么上面这些<code>open</code>、<code>write</code>的代码究竟在哪里呢？这些代码详见<code>user/usys.S</code>，截取这两个函数代码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>.global open
+</span></span><span class=line><span class=cl>open:
+</span></span><span class=line><span class=cl> li a7, SYS_open
+</span></span><span class=line><span class=cl> ecall
+</span></span><span class=line><span class=cl> ret
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>.global write
+</span></span><span class=line><span class=cl>write:
+</span></span><span class=line><span class=cl> li a7, SYS_write
+</span></span><span class=line><span class=cl> ecall
+</span></span><span class=line><span class=cl> ret
+</span></span></code></pre></td></tr></table></div></div><p>在用户态编写代码<code>func(a,b,c)</code>时，其实就是将a,b,c的值装入<code>a0</code>,<code>a1</code>,<code>a2</code>寄存器，然后将下一跳指令地址保存在<code>ra</code>寄存器，然后跳转到<code>func</code>地址处执行，上面的<code>open</code>和<code>write</code>函数只需要向<code>a7</code>寄存器装入调用号，再用<code>ecall</code>就可以陷入内核进行系统调用了。</p><p>可以看见这些代码都非常的一致，自己手写显得太傻了，故xv6源码中用<code>usys.pl</code>这个<code>perl</code>脚本自动生成<code>usys.S</code>，该脚本如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-perl data-lang=perl><span class=line><span class=cl><span class=ch>#!/usr/bin/perl -w</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Generate usys.S, the stubs for syscalls.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>print</span> <span class=s>&#34;# generated by usys.pl - do not edit\n&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>print</span> <span class=s>&#34;#include \&#34;kernel/syscall.h\&#34;\n&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>sub</span> <span class=nf>entry</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>my</span> <span class=nv>$name</span> <span class=o>=</span> <span class=nb>shift</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>print</span> <span class=s>&#34;.global $name\n&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>print</span> <span class=s>&#34;${name}:\n&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>print</span> <span class=s>&#34; li a7, SYS_${name}\n&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>print</span> <span class=s>&#34; ecall\n&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>print</span> <span class=s>&#34; ret\n&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl><span class=n>entry</span><span class=p>(</span><span class=s>&#34;fork&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>entry</span><span class=p>(</span><span class=s>&#34;exit&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>  <span class=c1># 每一个系统调用写一个entry(&#34;syscall_name&#34;)即可</span>
+</span></span></code></pre></td></tr></table></div></div><hr><p>到这里就基本知道系统调用是怎么回事了，虽然具体细节不太清楚，但知道个大概流程就可以开始做本次实验了。</p><hr><h3 id=用户态和内核态数据传输>用户态和内核态数据传输</h3><p>由于用户态和内核态地址空间不一样，故不能简单的通过地址来传入或传出数据，来看看<code>fstat</code>系统调用如何传出<code>struct stat</code>结构体到用户态，看其源码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=n>uint64</span>
+</span></span><span class=line><span class=cl><span class=nf>sys_fstat</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>file</span> <span class=o>*</span><span class=n>f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>uint64</span> <span class=n>st</span><span class=p>;</span> <span class=c1>// user pointer to struct stat
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span><span class=p>(</span><span class=nf>argfd</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>f</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=o>||</span> <span class=nf>argaddr</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>st</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 这里调用argaddr(1,&amp;st)后，st即存着用户传入的struct stat*指针的值
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nf>filestat</span><span class=p>(</span><span class=n>f</span><span class=p>,</span> <span class=n>st</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>再看看<code>filestat</code>的实现</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// Get metadata about file f.
+</span></span></span><span class=line><span class=cl><span class=c1>// addr is a user virtual address, pointing to a struct stat.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=nf>filestat</span><span class=p>(</span><span class=k>struct</span> <span class=n>file</span> <span class=o>*</span><span class=n>f</span><span class=p>,</span> <span class=n>uint64</span> <span class=n>addr</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>proc</span> <span class=o>*</span><span class=n>p</span> <span class=o>=</span> <span class=nf>myproc</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>stat</span> <span class=n>st</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=k>if</span><span class=p>(</span><span class=n>f</span><span class=o>-&gt;</span><span class=n>type</span> <span class=o>==</span> <span class=n>FD_INODE</span> <span class=o>||</span> <span class=n>f</span><span class=o>-&gt;</span><span class=n>type</span> <span class=o>==</span> <span class=n>FD_DEVICE</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>    <span class=nf>ilock</span><span class=p>(</span><span class=n>f</span><span class=o>-&gt;</span><span class=n>ip</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>stati</span><span class=p>(</span><span class=n>f</span><span class=o>-&gt;</span><span class=n>ip</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>st</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>iunlock</span><span class=p>(</span><span class=n>f</span><span class=o>-&gt;</span><span class=n>ip</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=nf>copyout</span><span class=p>(</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>pagetable</span><span class=p>,</span> <span class=n>addr</span><span class=p>,</span> <span class=p>(</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>st</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>st</span><span class=p>))</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span> <span class=c1>// 注意这里将内核态的结构复制到用户态的地址处
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>可以看到需要通过<code>copyout</code>函数来将内核地址空间的数据复制到用户的地址空间，其中第一个参数是用户进程的页表。</p><hr><h2 id=实验>实验</h2><h3 id=trace>trace</h3><p>看看实验要做什么</p><blockquote><p>In this assignment you will add a system call tracing feature that may help you when debugging later labs. You&rsquo;ll create a new <code>trace</code> system call that will control tracing. It should take one argument, an integer &ldquo;mask&rdquo;, whose bits specify which system calls to trace. For example, to trace the fork system call, a program calls <code>trace(1 &lt;&lt; SYS_fork)</code>, where <code>SYS_fork</code> is a syscall number from <code>kernel/syscall.h</code>. You have to modify the xv6 kernel to print out a line when each system call is about to return, if the system call&rsquo;s number is set in the mask. The line should contain the process id, the name of the system call and the return value; you don&rsquo;t need to print the system call arguments. The <code>trace</code> system call should enable tracing for the process that calls it and any children that it subsequently forks, but should not affect other processes.</p></blockquote><p>实验应该达到的效果</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ trace <span class=m>32</span> grep hello README <span class=c1># 32 就是 1 &lt;&lt; SYS_read</span>
+</span></span><span class=line><span class=cl>3: syscall <span class=nb>read</span> -&gt; <span class=m>1023</span>
+</span></span><span class=line><span class=cl>3: syscall <span class=nb>read</span> -&gt; <span class=m>966</span>
+</span></span><span class=line><span class=cl>3: syscall <span class=nb>read</span> -&gt; <span class=m>70</span>
+</span></span><span class=line><span class=cl>3: syscall <span class=nb>read</span> -&gt; <span class=m>0</span>
+</span></span></code></pre></td></tr></table></div></div><hr><p>有了前文的基础，这个实验其实很简单，首先要找个地方记录某个进程要trace的系统调用，显然在<code>PCB</code>即<code>struct proc</code>中记录这个<code>mask</code>比较好，在该结构中添加一个<code>mask</code>字段如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// Per-process state
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>struct</span> <span class=n>proc</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=p>...</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// for syscall trace
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>trace_mask</span><span class=p>;</span>  <span class=c1>// save the trace mask for a process
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>那么添加的系统调用功能就是设置进程的<code>trace_mask</code>，在<code>sysproc.c</code>中添加如下系统调用函数如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=n>uint64</span>
+</span></span><span class=line><span class=cl><span class=nf>sys_trace</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>proc</span> <span class=o>*</span><span class=n>p</span> <span class=o>=</span> <span class=nf>myproc</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>mask</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl>  <span class=nf>argint</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span><span class=o>&amp;</span><span class=n>mask</span><span class=p>);</span>  <span class=c1>// get the mask argment
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>p</span><span class=o>-&gt;</span><span class=n>trace_mask</span> <span class=o>=</span> <span class=n>mask</span><span class=p>;</span>   <span class=c1>// save the trace mask
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>在<code>syscall.h</code>中添加系统调用号，如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// System call numbers
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>...</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// added system call
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define SYS_trace 22
+</span></span></span></code></pre></td></tr></table></div></div><p>接着修改<code>syscall.c</code>中的系统调用表，添加一条如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// added system call
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>extern</span> <span class=n>uint64</span> <span class=nf>sys_trace</span><span class=p>(</span><span class=kt>void</span><span class=p>);</span>  <span class=c1>// declaration
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=nf>uint64</span> <span class=p>(</span><span class=o>*</span><span class=n>syscalls</span><span class=p>[])(</span><span class=kt>void</span><span class=p>)</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>...</span>
+</span></span><span class=line><span class=cl><span class=c1>// added syscall
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>[</span><span class=n>SYS_trace</span><span class=p>]</span>   <span class=n>sys_trace</span><span class=p>,</span>  <span class=c1>// 添加一条系统调用
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>为了在调用系统调用时输出相关信息，仔细想想，每一个系统调用都要经过<code>syscall</code>，那么可以修改<code>syscall</code>，在系统调用后输出<code>trace</code>的信息，修改该函数如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// 记录系统调用名字
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>static</span> <span class=kt>char</span> <span class=o>*</span><span class=n>syscalls_names</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;none&#34;</span><span class=p>,</span><span class=s>&#34;fork&#34;</span><span class=p>,</span><span class=s>&#34;exit&#34;</span><span class=p>,</span><span class=s>&#34;wait&#34;</span><span class=p>,</span><span class=s>&#34;pipe&#34;</span><span class=p>,</span><span class=s>&#34;read&#34;</span><span class=p>,</span><span class=s>&#34;kill&#34;</span><span class=p>,</span><span class=s>&#34;exec&#34;</span><span class=p>,</span><span class=s>&#34;fstat&#34;</span><span class=p>,</span><span class=s>&#34;chdir&#34;</span><span class=p>,</span><span class=s>&#34;dup&#34;</span><span class=p>,</span><span class=s>&#34;getpid&#34;</span><span class=p>,</span><span class=s>&#34;sbrk&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;sleep&#34;</span><span class=p>,</span><span class=s>&#34;uptime&#34;</span><span class=p>,</span><span class=s>&#34;open&#34;</span><span class=p>,</span><span class=s>&#34;write&#34;</span><span class=p>,</span><span class=s>&#34;mknod&#34;</span><span class=p>,</span><span class=s>&#34;unlink&#34;</span><span class=p>,</span><span class=s>&#34;link&#34;</span><span class=p>,</span><span class=s>&#34;mkdir&#34;</span><span class=p>,</span><span class=s>&#34;close&#34;</span><span class=p>,</span><span class=s>&#34;trace&#34;</span><span class=p>,</span><span class=s>&#34;sysinfo&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span>
+</span></span><span class=line><span class=cl><span class=nf>syscall</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>num</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>proc</span> <span class=o>*</span><span class=n>p</span> <span class=o>=</span> <span class=nf>myproc</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>num</span> <span class=o>=</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a7</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span><span class=p>(</span><span class=n>num</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=o>&amp;&amp;</span> <span class=n>num</span> <span class=o>&lt;</span> <span class=nf>NELEM</span><span class=p>(</span><span class=n>syscalls</span><span class=p>)</span> <span class=o>&amp;&amp;</span> <span class=n>syscalls</span><span class=p>[</span><span class=n>num</span><span class=p>])</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a0</span> <span class=o>=</span> <span class=n>syscalls</span><span class=p>[</span><span class=n>num</span><span class=p>]();</span> <span class=c1>// a0 中存着返回值
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>if</span><span class=p>((</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>trace_mask</span> <span class=o>&amp;</span> <span class=p>(</span><span class=mi>1</span> <span class=o>&lt;&lt;</span> <span class=n>num</span><span class=p>))</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>){</span> <span class=c1>// it is a traced system call 
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=c1>// 如果该系统调用的mask设置过了，则输出信息
+</span></span></span><span class=line><span class=cl><span class=c1></span>      <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;%d: syscall %s -&gt; %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>pid</span><span class=p>,</span><span class=n>syscalls_names</span><span class=p>[</span><span class=n>num</span><span class=p>],</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;%d %s: unknown sys call %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>p</span><span class=o>-&gt;</span><span class=n>pid</span><span class=p>,</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>name</span><span class=p>,</span> <span class=n>num</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a0</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>注意按照任务要求，如果一个进程<code>trace</code>某些系统调用，那么该进行<code>fork</code>出来的子进程也要<code>trace</code>这些系统调用，<code>fork</code>系统调用代码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=n>uint64</span>
+</span></span><span class=line><span class=cl><span class=nf>sys_fork</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nf>fork</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>查看这个<code>fork</code>函数代码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// Create a new process, copying the parent.
+</span></span></span><span class=line><span class=cl><span class=c1>// Sets up child kernel stack to return as if from fork() system call.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=nf>fork</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>i</span><span class=p>,</span> <span class=n>pid</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>proc</span> <span class=o>*</span><span class=n>np</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>proc</span> <span class=o>*</span><span class=n>p</span> <span class=o>=</span> <span class=nf>myproc</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Allocate process.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>if</span><span class=p>((</span><span class=n>np</span> <span class=o>=</span> <span class=nf>allocproc</span><span class=p>())</span> <span class=o>==</span> <span class=mi>0</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Copy user memory from parent to child.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>if</span><span class=p>(</span><span class=nf>uvmcopy</span><span class=p>(</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>pagetable</span><span class=p>,</span> <span class=n>np</span><span class=o>-&gt;</span><span class=n>pagetable</span><span class=p>,</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>sz</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>    <span class=nf>freeproc</span><span class=p>(</span><span class=n>np</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>release</span><span class=p>(</span><span class=o>&amp;</span><span class=n>np</span><span class=o>-&gt;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=n>np</span><span class=o>-&gt;</span><span class=n>sz</span> <span class=o>=</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>sz</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>np</span><span class=o>-&gt;</span><span class=n>parent</span> <span class=o>=</span> <span class=n>p</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// copy saved user registers.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=o>*</span><span class=p>(</span><span class=n>np</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=p>)</span> <span class=o>=</span> <span class=o>*</span><span class=p>(</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Cause fork to return 0 in the child.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>np</span><span class=o>-&gt;</span><span class=n>trapframe</span><span class=o>-&gt;</span><span class=n>a0</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// increment reference counts on open file descriptors.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>for</span><span class=p>(</span><span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>NOFILE</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>ofile</span><span class=p>[</span><span class=n>i</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>      <span class=n>np</span><span class=o>-&gt;</span><span class=n>ofile</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=nf>filedup</span><span class=p>(</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>ofile</span><span class=p>[</span><span class=n>i</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>  <span class=n>np</span><span class=o>-&gt;</span><span class=n>cwd</span> <span class=o>=</span> <span class=nf>idup</span><span class=p>(</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>cwd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nf>safestrcpy</span><span class=p>(</span><span class=n>np</span><span class=o>-&gt;</span><span class=n>name</span><span class=p>,</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>name</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>name</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>pid</span> <span class=o>=</span> <span class=n>np</span><span class=o>-&gt;</span><span class=n>pid</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>np</span><span class=o>-&gt;</span><span class=n>state</span> <span class=o>=</span> <span class=n>RUNNABLE</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nf>release</span><span class=p>(</span><span class=o>&amp;</span><span class=n>np</span><span class=o>-&gt;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>pid</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>具体细节不谈，但从上面的代码可以看出，<code>p</code>是当前进程<code>PCB</code>，<code>np</code>是<code>fork</code>出来的，新的进程的<code>PCB</code>，该函数就是在执行复制进程的工作。为了让子进程可以<code>trace</code>和父进程同样的系统调用，需要将父进程的<code>trace_mask</code>也复制一下，添加一行代码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// Create a new process, copying the parent.
+</span></span></span><span class=line><span class=cl><span class=c1>// Sets up child kernel stack to return as if from fork() system call.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=nf>fork</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=p>...</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// copy trace mask
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>np</span><span class=o>-&gt;</span><span class=n>trace_mask</span> <span class=o>=</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>trace_mask</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>...</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>pid</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><p>至此完成了添加函数调用的任务，接下来还需要给用户增加接口，故在<code>usys.pl</code>中末尾添加代码如下(作用见 <a class=link href=#%e7%94%a8%e6%88%b7%e6%80%81stub>用户态stub</a> 那一小节)</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-perl data-lang=perl><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=c1># added system call</span>
+</span></span><span class=line><span class=cl><span class=n>entry</span><span class=p>(</span><span class=s>&#34;trace&#34;</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>在头文件<code>user/user.h</code>中添加该系统调用原型如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// added system call
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>int</span> <span class=nf>trace</span><span class=p>(</span><span class=kt>int</span> <span class=n>mask</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><hr><p>一切完成后测试能否通过测试，如下</p><p><img src=/aniya_blog/p/lab2-system-calls/image-20230107224018542.png width=1094 height=172 srcset="/aniya_blog/p/lab2-system-calls/image-20230107224018542_hub6a9549b3f3d4c4fca4fe9bcf4cc5b3b_44222_480x0_resize_box_3.png 480w, /aniya_blog/p/lab2-system-calls/image-20230107224018542_hub6a9549b3f3d4c4fca4fe9bcf4cc5b3b_44222_1024x0_resize_box_3.png 1024w" loading=lazy alt=trace测试 class=gallery-image data-flex-grow=636 data-flex-basis=1526px></p><h3 id=sysinfo>sysinfo</h3><p>第二个添加的系统调用根据<a class=link href=https://pdos.csail.mit.edu/6.828/2020/labs/syscall.html target=_blank rel=noopener>实验指导书</a>描述如下</p><blockquote><p>In this assignment you will add a system call, <code>sysinfo</code>, that collects information about the running system. The system call takes one argument: a pointer to a <code>struct sysinfo</code> (see <code>kernel/sysinfo.h</code>). The kernel should fill out the fields of this struct: the <code>freemem</code> field should be set to the number of bytes of free memory, and the <code>nproc</code> field should be set to the number of processes whose <code>state</code> is not <code>UNUSED</code>. We provide a test program <code>sysinfotest</code>; you pass this assignment if it prints &ldquo;sysinfotest: OK&rdquo;.</p></blockquote><p>可以看到，<code>sysinfo</code>系统调用要求给用户返回如下结构</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=k>struct</span> <span class=n>sysinfo</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>uint64</span> <span class=n>freemem</span><span class=p>;</span>   <span class=c1>// amount of free memory (bytes)
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>uint64</span> <span class=n>nproc</span><span class=p>;</span>     <span class=c1>// number of process
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>指导书上比较关键的几句提示如下</p><ul><li>sysinfo needs to copy a <code>struct sysinfo</code> back to user space; see <code>sys_fstat()</code> (<code>kernel/sysfile.c</code>) and <code>filestat()</code> (<code>kernel/file.c</code>) for examples of how to do that using <code>copyout()</code>.</li><li>To collect the amount of free memory, add a function to <code>kernel/kalloc.c</code></li><li>To collect the number of processes, add a function to <code>kernel/proc.c</code></li></ul><p>其中第一点在<a class=link href=%e7%94%a8%e6%88%b7%e6%80%81%e5%92%8c%e5%86%85%e6%a0%b8%e6%80%81%e6%95%b0%e6%8d%ae%e4%bc%a0%e8%be%93>前文</a>中有所描述。</p><p>但非常羞愧的是，第二第三点，道理我都懂，可是关于xv6我还一无所知，我怎么知道怎么获取系统进程数和空闲内存呀😅，也没有一点提示，还没看到xv6的内存管理和进程调度呢🤡</p><p>无奈稍微在网上查了一下🙃，编写获取空闲内存的代码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// kalloc.c
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=n>run</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>run</span> <span class=o>*</span><span class=n>next</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>spinlock</span> <span class=n>lock</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>run</span> <span class=o>*</span><span class=n>freelist</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span> <span class=n>kmem</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// return number of free bytes
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>uint64</span> <span class=nf>free_bytes</span><span class=p>(){</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>run</span> <span class=o>*</span><span class=n>p</span> <span class=o>=</span> <span class=n>kmem</span><span class=p>.</span><span class=n>freelist</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>uint64</span> <span class=n>num_of_free_page</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>while</span><span class=p>(</span><span class=n>p</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>    <span class=n>num_of_free_page</span> <span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span> <span class=o>=</span> <span class=n>p</span><span class=o>-&gt;</span><span class=n>next</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>num_of_free_page</span> <span class=o>*</span> <span class=n>PGSIZE</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面代码中的<code>kmem</code>用于管理内存，该结构内有一个<code>lock</code>和<code>freelist</code>，顾名思义<code>freelist</code>应该就是串起空闲页的结构(灰常奇怪，这个链表节点<code>struct run</code>为毛只有一个指针&mldr;)，但总之先这样吧，后面做内存管理时会知道怎么回事的🤣</p><p>上面代码的<code>free_bytes</code>即获取空闲内存字节数的函数。</p><hr><p>接下来再看看怎么获取系统进程数目，代码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=k>struct</span> <span class=n>proc</span> <span class=n>proc</span><span class=p>[</span><span class=n>NPROC</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// get the number of process
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>uint64</span> <span class=nf>num_proc</span><span class=p>(){</span>
+</span></span><span class=line><span class=cl>  <span class=n>uint64</span> <span class=n>sum</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span><span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span><span class=n>i</span> <span class=o>&lt;</span> <span class=n>NPROC</span><span class=p>;</span><span class=n>i</span> <span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>proc</span><span class=p>[</span><span class=n>i</span><span class=p>].</span><span class=n>state</span> <span class=o>!=</span> <span class=n>UNUSED</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=n>sum</span> <span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>sum</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面代码中的<code>proc</code>结构体就是存所有进程的状态的，<code>struct proc</code>这个结构体在前文也看到过，再次展示如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=k>enum</span> <span class=n>procstate</span> <span class=p>{</span> <span class=n>UNUSED</span><span class=p>,</span> <span class=n>SLEEPING</span><span class=p>,</span> <span class=n>RUNNABLE</span><span class=p>,</span> <span class=n>RUNNING</span><span class=p>,</span> <span class=n>ZOMBIE</span> <span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Per-process state
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>struct</span> <span class=n>proc</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>spinlock</span> <span class=n>lock</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// p-&gt;lock must be held when using these:
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>enum</span> <span class=n>procstate</span> <span class=n>state</span><span class=p>;</span>        <span class=c1>// Process state
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>struct</span> <span class=n>proc</span> <span class=o>*</span><span class=n>parent</span><span class=p>;</span>         <span class=c1>// Parent process
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>void</span> <span class=o>*</span><span class=n>chan</span><span class=p>;</span>                  <span class=c1>// If non-zero, sleeping on chan
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>killed</span><span class=p>;</span>                  <span class=c1>// If non-zero, have been killed
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>xstate</span><span class=p>;</span>                  <span class=c1>// Exit status to be returned to parent&#39;s wait
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>pid</span><span class=p>;</span>                     <span class=c1>// Process ID
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=c1>// these are private to the process, so p-&gt;lock need not be held.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>uint64</span> <span class=n>kstack</span><span class=p>;</span>               <span class=c1>// Virtual address of kernel stack
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>uint64</span> <span class=n>sz</span><span class=p>;</span>                   <span class=c1>// Size of process memory (bytes)
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>pagetable_t</span> <span class=n>pagetable</span><span class=p>;</span>       <span class=c1>// User page table
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>struct</span> <span class=n>trapframe</span> <span class=o>*</span><span class=n>trapframe</span><span class=p>;</span> <span class=c1>// data page for trampoline.S
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>struct</span> <span class=n>context</span> <span class=n>context</span><span class=p>;</span>      <span class=c1>// swtch() here to run process
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>struct</span> <span class=n>file</span> <span class=o>*</span><span class=n>ofile</span><span class=p>[</span><span class=n>NOFILE</span><span class=p>];</span>  <span class=c1>// Open files
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>struct</span> <span class=n>inode</span> <span class=o>*</span><span class=n>cwd</span><span class=p>;</span>           <span class=c1>// Current directory
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>char</span> <span class=n>name</span><span class=p>[</span><span class=mi>16</span><span class=p>];</span>               <span class=c1>// Process name (debugging)
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=c1>// for syscall trace
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>trace_mask</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>其中<code>state</code>为进程状态，<code>UNUSED</code>表示<code>proc</code>数组中该项还未被使用，故要得到进程数，只需要遍历<code>proc</code>数组，看看不是<code>UNUSED</code>的有多少个即可，具体代码见上面的<code>num_proc</code>.</p><p>写了<code>num_proc</code>和<code>free_bytes</code>这俩函数后，接着就很容易编写我们的系统调用了，在<code>kernel/sysproc.c</code>添加如下系统调用代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=n>uint64</span>
+</span></span><span class=line><span class=cl><span class=nf>sys_sysinfo</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>uint64</span> <span class=n>info</span><span class=p>;</span>  <span class=c1>// user pointer to struct sysinfo
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>struct</span> <span class=n>sysinfo</span> <span class=n>si</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=n>proc</span> <span class=o>*</span><span class=n>p</span> <span class=o>=</span> <span class=nf>myproc</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>uint64</span> <span class=nf>num_proc</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=n>uint64</span> <span class=nf>free_bytes</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>si</span><span class=p>.</span><span class=n>freemem</span> <span class=o>=</span> <span class=nf>free_bytes</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=n>si</span><span class=p>.</span><span class=n>nproc</span> <span class=o>=</span> <span class=nf>num_proc</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nf>argaddr</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span><span class=o>&amp;</span><span class=n>info</span><span class=p>);</span> <span class=c1>// get user&#39;s pointer to struct sysinfo
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span><span class=p>(</span><span class=nf>copyout</span><span class=p>(</span><span class=n>p</span><span class=o>-&gt;</span><span class=n>pagetable</span><span class=p>,</span><span class=n>info</span><span class=p>,(</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>si</span><span class=p>,</span><span class=k>sizeof</span><span class=p>(</span><span class=n>si</span><span class=p>))</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span> <span class=c1>// use copyout to copy si to user address space
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>其他操作在此略过，详见上一小节（如添加系统调用号，修改<code>syscall.c</code>等等）.</p><hr><h2 id=尾声>尾声</h2><p>这个系列可谓是写一篇少一篇啦😆</p><p>可指不准啥时候就“中道崩殂”了，不过不管怎么说，前两个实验做完啦！</p><p>这两个实验都只是摸摸xv6的表面，下一个实验终于正式和操作系统相关啦！进入内存管理阶段！！</p></section><footer class=article-footer><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/aniya_blog/p/os_util_lab/><div class=article-image><img src=/aniya_blog/p/os_util_lab/saber2.d3cf7db7f3e39c28f3c1c04197864dea_hu583263cbbee05d2c263b501713a891d4_83776_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post OS_util_lab" data-hash="md5-0899t/PjnCjzwcBBl4ZN6g=="></div><div class=article-details><h2 class=article-title>OS_util_lab</h2></div></a></article><article class=has-image><a href=/aniya_blog/p/xv6-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/><div class=article-image><img src=/aniya_blog/p/xv6-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/wallpaper.74540f2c69533900a024c238ae79d45e_hu0ff37ebbb98d2b42bafbb67ed8d5243a_153541_250x150_fill_q75_box_smart1.jpg width=250 height=150 loading=lazy alt="Featured image of post xv6 环境配置" data-hash="md5-dFQPLGlTOQCgJMI4rnnUXg=="></div><div class=article-details><h2 class=article-title>xv6 环境配置</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2020 -
+2023 Aniya's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/aniya_blog/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
