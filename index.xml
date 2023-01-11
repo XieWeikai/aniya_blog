@@ -1,4 +1,164 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Aniya's Blog</title><link>https://XieWeikai.github.io/aniya_blog/</link><description>Recent content on Aniya's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 06 Jan 2023 22:37:47 +0800</lastBuildDate><atom:link href="https://XieWeikai.github.io/aniya_blog/index.xml" rel="self" type="application/rss+xml"/><item><title>lab2: system calls</title><link>https://XieWeikai.github.io/aniya_blog/p/lab2-system-calls/</link><pubDate>Fri, 06 Jan 2023 22:37:47 +0800</pubDate><guid>https://XieWeikai.github.io/aniya_blog/p/lab2-system-calls/</guid><description>&lt;img src="https://XieWeikai.github.io/aniya_blog/p/lab2-system-calls/cover.jpg" alt="Featured image of post lab2: system calls" />&lt;h1 id="os-lab-syscall">OS lab syscall&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Aniya's Blog</title><link>https://XieWeikai.github.io/aniya_blog/</link><description>Recent content on Aniya's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 10 Jan 2023 20:21:11 +0800</lastBuildDate><atom:link href="https://XieWeikai.github.io/aniya_blog/index.xml" rel="self" type="application/rss+xml"/><item><title>闲谈、gdb</title><link>https://XieWeikai.github.io/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/</link><pubDate>Tue, 10 Jan 2023 20:21:11 +0800</pubDate><guid>https://XieWeikai.github.io/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/</guid><description>&lt;img src="https://XieWeikai.github.io/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/piano.jpg" alt="Featured image of post 闲谈、gdb" />&lt;h1 id="闲话gdb">闲话、gdb&lt;/h1>
+&lt;h2 id="闲话">闲话&lt;/h2>
+&lt;p>自打syscall lab以来，三天都没看MIT 6.S081🤣，今天扫了一下下一节课的内容，发现居然！！！ 居然是讲实验二的内容🤡&amp;hellip;&lt;/p>
+&lt;p>讲的大概就是上一篇&lt;a class="link" href="../lab2-system-calls" >博客&lt;/a>中&amp;quot;&lt;a class="link" href="../lab2-system-calls/#%e5%87%86%e5%a4%87" >准备&lt;/a>&amp;ldquo;那一小节的内容，前几天做syscall lab时还奇怪呢，怎么这个实验内容不带讲的，全靠自己看是吧，还看了有几个小时&amp;hellip;&amp;hellip;&lt;/p>
+&lt;p>官网上的课程表长这个样&lt;/p>
+&lt;p>&lt;img src="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230110235741628.png"
+width="2280"
+height="410"
+srcset="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230110235741628_hu9aa81fbd4e5ba9163e8f326cd48f0aa8_171479_480x0_resize_box_3.png 480w, https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230110235741628_hu9aa81fbd4e5ba9163e8f326cd48f0aa8_171479_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="MIT 6.S081课程表的一小部分"
+class="gallery-image"
+data-flex-grow="556"
+data-flex-basis="1334px"
+>&lt;/p>
+&lt;p>实验二并没有对应的课程，但是当你往下一看&lt;/p>
+&lt;p>&lt;img src="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111000203618.png"
+width="2286"
+height="608"
+srcset="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111000203618_hu2de07b360ca8abb6b8d9bbeea6687787_284909_480x0_resize_box_3.png 480w, https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111000203618_hu2de07b360ca8abb6b8d9bbeea6687787_284909_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="课程表的更大一部分"
+class="gallery-image"
+data-flex-grow="375"
+data-flex-basis="902px"
+>&lt;/p>
+&lt;p>逆天呀，原来是先布置实验，过几天才上对应的课😨&lt;/p>
+&lt;p>由于已经做过实验二了，就不仔细看这节课了，象征性的扫了一下，贴几个链接如下&lt;/p>
+&lt;ul>
+&lt;li>好心人的课程翻译: &lt;a class="link" href="https://mit-public-courses-cn-translatio.gitbook.io/mit6-s081/lec03-os-organization-and-system-calls" target="_blank" rel="noopener"
+>https://mit-public-courses-cn-translatio.gitbook.io/mit6-s081/lec03-os-organization-and-system-calls&lt;/a>&lt;/li>
+&lt;li>课程视频: &lt;a class="link" href="https://www.bilibili.com/video/BV19k4y1C7kA?p=2&amp;amp;vd_source=a47945b9c45a33522fa3c242107add1e" target="_blank" rel="noopener"
+>https://www.bilibili.com/video/BV19k4y1C7kA?p=2&amp;vd_source=a47945b9c45a33522fa3c242107add1e&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="gdb">GDB&lt;/h2>
+&lt;p>在上面讲到的那节课中，最后在描述xv6大致启动过程时，老师用到了GDB来跟踪启动时执行的代码，之前还没用过gdb来调试xv6，于是也尝试了一下&lt;/p>
+&lt;h3 id="启动">启动&lt;/h3>
+&lt;p>使用如下命令启动xv6&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">make &lt;span class="nv">CPUS&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="m">1&lt;/span> qemu-gdb
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>CPUS设定模拟的核数，设为1是因为一个CPU容易调试，启动后效果如下&lt;/p>
+&lt;p>&lt;img src="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111001430392.png"
+width="1470"
+height="186"
+srcset="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111001430392_hu9e5b13d39e3fc5593b554a5647d43ee2_154973_480x0_resize_box_3.png 480w, https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111001430392_hu9e5b13d39e3fc5593b554a5647d43ee2_154973_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="启动可调式的xv6"
+class="gallery-image"
+data-flex-grow="790"
+data-flex-basis="1896px"
+>&lt;/p>
+&lt;h3 id="docker环境下启动gdb">docker环境下启动gdb&lt;/h3>
+&lt;p>上面的xv6是跑在docker容器内的(见&lt;a class="link" href="../xv6-%e7%8e%af%e5%a2%83%e9%85%8d%e7%bd%ae" >环境配置&lt;/a>)，直接在docker内使用gdb，效果如下&lt;/p>
+&lt;p>&lt;img src="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111001956891.png"
+width="1290"
+height="410"
+srcset="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111001956891_huf88e7ca79c48a7b2a9f5d9e5c53093a7_265996_480x0_resize_box_3.png 480w, https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111001956891_huf88e7ca79c48a7b2a9f5d9e5c53093a7_265996_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="无法执行.gdbinit"
+class="gallery-image"
+data-flex-grow="314"
+data-flex-basis="755px"
+>&lt;/p>
+&lt;p>启动时报了这样的一个警告，说是&lt;code>auto-loading has been declined&lt;/code>，gdb在启动时会自动执行当前目录内的&lt;code>.gdbinit&lt;/code>内的命令，在实验目录下该文件内容如下&lt;/p>
+&lt;p>&lt;img src="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111002230840.png"
+width="496"
+height="210"
+srcset="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111002230840_hu5e0db509c03641c429cd536f5b0a0b83_71766_480x0_resize_box_3.png 480w, https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111002230840_hu5e0db509c03641c429cd536f5b0a0b83_71766_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt=".gdbinit"
+class="gallery-image"
+data-flex-grow="236"
+data-flex-basis="566px"
+>&lt;/p>
+&lt;p>执行完这些命令就已经设置好了gdb客户端，可以开始调试xv6，但是docker内的gdb说要添加&lt;code>safe-path&lt;/code>，按照提示向&lt;code>/root/.config/gdb/gdbinit&lt;/code>添加如下内容&lt;/p>
+&lt;p>&lt;img src="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111093741159.png"
+width="508"
+height="90"
+srcset="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111093741159_huaaf7278fa0a4d0c285c0e637a24d27f3_24206_480x0_resize_box_3.png 480w, https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111093741159_huaaf7278fa0a4d0c285c0e637a24d27f3_24206_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="编辑配置文件"
+class="gallery-image"
+data-flex-grow="564"
+data-flex-basis="1354px"
+>&lt;/p>
+&lt;p>直接将&lt;code>/xwk&lt;/code>目录设置为&lt;code>safe-path&lt;/code>，再次启动gdb，效果如下&lt;/p>
+&lt;p>&lt;img src="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111094114896.png"
+width="982"
+height="144"
+srcset="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111094114896_hue66dd368d7db13d22a1dd2a6404ae444_63532_480x0_resize_box_3.png 480w, https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111094114896_hue66dd368d7db13d22a1dd2a6404ae444_63532_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="不支持riscv:rv64"
+class="gallery-image"
+data-flex-grow="681"
+data-flex-basis="1636px"
+>&lt;/p>
+&lt;p>结果还是有问题，这个普通的&lt;code>gdb&lt;/code>都不支持&lt;code>riscv:rv64&lt;/code>。回忆起之前&lt;a class="link" href="../xv6-%e7%8e%af%e5%a2%83%e9%85%8d%e7%bd%ae/#%e5%ae%89%e8%a3%85riscv-tools" >环境配置&lt;/a>时，安装了一个&lt;code>gdb-multiarch&lt;/code>，看名字就是多architechture的gdb，尝试使用&lt;code>gdb-multiarch&lt;/code>，结果如下&lt;/p>
+&lt;p>&lt;img src="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111094606710.png"
+width="1266"
+height="726"
+srcset="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111094606710_hu7bdc4087b27ac20bb2d75c6809439bf2_410266_480x0_resize_box_3.png 480w, https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111094606710_hu7bdc4087b27ac20bb2d75c6809439bf2_410266_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="成功"
+class="gallery-image"
+data-flex-grow="174"
+data-flex-basis="418px"
+>&lt;/p>
+&lt;p>上图结果和课程录像一致，也可以正常进行调试。&lt;/p>
+&lt;hr>
+&lt;h3 id="mac下的gdb">mac下的gdb&lt;/h3>
+&lt;p>尝试在实验目录下(这样才能执行&lt;code>.gdbinit&lt;/code>)直接启动macOS下安装的gdb，发现macOS下用brew装的gdb居然支持&lt;code>riscv:rv64&lt;/code>，真是太好了😋！&lt;/p>
+&lt;p>可是docker内的25000端口没有暴露😅，只好重新开一个容器了，先把已有的容器commit，再新建容器&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker commit -a &lt;span class="s2">&amp;#34;...&amp;#34;&lt;/span> -m &lt;span class="s2">&amp;#34;...&amp;#34;&lt;/span> xv6 dev:latest &lt;span class="c1"># 将容器commit成镜像&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">docker container rm xv6 &lt;span class="c1"># 删除xv6容器&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">docker run -itd --name xv6 &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -p 8080:22 &lt;span class="se">\ &lt;/span> &lt;span class="c1"># ssh端口&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="se">\p&lt;/span> 25000:25000 &lt;span class="se">\ &lt;/span>&lt;span class="c1"># gdb服务器端口&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -v ...:... &lt;span class="c1"># 挂载实验目录&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>重新执行下面语句启动xv6并启动gdb服务器&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">make &lt;span class="nv">CPUS&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="m">1&lt;/span> qemu-gdb
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>接着直接在macOS下启动gdb，如下&lt;/p>
+&lt;p>&lt;img src="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111095707545.png"
+width="1272"
+height="722"
+srcset="https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111095707545_hu94a7d1e51f9a3ec1d7a681a8a4662235_404891_480x0_resize_box_3.png 480w, https://XieWeikai.github.io/aniya_blog/aniya_blog/p/%E9%97%B2%E8%B0%88gdb/assets/image-20230111095707545_hu94a7d1e51f9a3ec1d7a681a8a4662235_404891_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="image-20230111095707545"
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="422px"
+>&lt;/p>
+&lt;p>大功告成😤&lt;/p>
+&lt;hr>
+&lt;h2 id="尾声">尾声&lt;/h2>
+&lt;p>因为科研组的关系，接下来可能得看一些深度学习相关的东西了，那OS就会比以前更慢了😨，看一节课是一节课吧🤣&lt;/p></description></item><item><title>lab2: system calls</title><link>https://XieWeikai.github.io/aniya_blog/p/lab2-system-calls/</link><pubDate>Fri, 06 Jan 2023 22:37:47 +0800</pubDate><guid>https://XieWeikai.github.io/aniya_blog/p/lab2-system-calls/</guid><description>&lt;img src="https://XieWeikai.github.io/aniya_blog/p/lab2-system-calls/cover.jpg" alt="Featured image of post lab2: system calls" />&lt;h1 id="os-lab-syscall">OS lab syscall&lt;/h1>
 &lt;p>时隔一天，居然又象征性的完成了一个实验😋&lt;/p>
 &lt;p>本次实验需要在xv6系统内额外添加两个系统调用，分别是&lt;code>trace&lt;/code>和&lt;code>sysinfo&lt;/code>，&lt;code>trace&lt;/code>用于跟踪某个进程使用系统调用的情况，&lt;code>sysinfo&lt;/code>用于查看系统内空闲内存和进程个数。&lt;/p>
 &lt;p>实验的官方指导见 &lt;a class="link" href="https://pdos.csail.mit.edu/6.828/2020/labs/syscall.html" target="_blank" rel="noopener"
