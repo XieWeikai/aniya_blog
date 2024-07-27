@@ -1,12 +1,12 @@
 ---
 title: About
-description: Hugo, the world's fastest framework for building websites
+description: 个人信息
 date: '2019-02-28'
 aliases:
   - about-us
   - about-hugo
   - contact
-license: CC BY-NC-ND
+license: BUPT
 lastmod: '2020-10-09'
 menu:
     main: 
@@ -17,9 +17,7 @@ menu:
 
 ![KAWAYI ANIYA](image-20230105231517795.png)
 
-Aniya ，四岁，读心能力拥有者
-
-目前正在长期访问BUPT计算机学院。
+谢卫凯：北京邮电大学本科生、准研究生
 
 邮箱: 
 - 2020211599@bupt.edu.cn
