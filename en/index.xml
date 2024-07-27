@@ -1,1 +1,21 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Aniya's Blog</title><link>https://XieWeikai.github.io/aniya_blog/en/</link><description>Recent content on Aniya's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 28 May 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://XieWeikai.github.io/aniya_blog/en/index.xml" rel="self" type="application/rss+xml"/><item><title>archives</title><link>https://XieWeikai.github.io/aniya_blog/en/archives/</link><pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate><guid>https://XieWeikai.github.io/aniya_blog/en/archives/</guid><description/></item><item><title>about</title><link>https://XieWeikai.github.io/aniya_blog/en/about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://XieWeikai.github.io/aniya_blog/en/about/</guid><description>&lt;p>This is a test page for i18n support.&lt;/p></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Aniya's Blog</title><link>https://XieWeikai.github.io/aniya_blog/en/</link><description>Recent content on Aniya's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 28 May 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://XieWeikai.github.io/aniya_blog/en/index.xml" rel="self" type="application/rss+xml"/><item><title>archives</title><link>https://XieWeikai.github.io/aniya_blog/en/archives/</link><pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate><guid>https://XieWeikai.github.io/aniya_blog/en/archives/</guid><description/></item><item><title>about</title><link>https://XieWeikai.github.io/aniya_blog/en/about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://XieWeikai.github.io/aniya_blog/en/about/</guid><description>&lt;p>&lt;img src="https://XieWeikai.github.io/aniya_blog/aniya_blog/about/image-20230105231517795.png"
+width="300"
+height="168"
+srcset="https://XieWeikai.github.io/aniya_blog/aniya_blog/about/image-20230105231517795_hu56ef1f767918fe49d721423cdacff8ec_86465_480x0_resize_box_3.png 480w, https://XieWeikai.github.io/aniya_blog/aniya_blog/about/image-20230105231517795_hu56ef1f767918fe49d721423cdacff8ec_86465_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="KAWAYI ANIYA"
+class="gallery-image"
+data-flex-grow="178"
+data-flex-basis="428px"
+>&lt;/p>
+&lt;p>Weikai Xie： Undergraduate student&lt;/p>
+&lt;p>email:&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="mailto:2020211599@bupt.edu.cn" >2020211599@bupt.edu.cn&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="mailto:1263212259@qq.com" >1263212259@qq.com&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="mailto:xxxweikai@gmail.com" >xxxweikai@gmail.com&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>Phone:&lt;/p>
+&lt;ul>
+&lt;li>15766418342&lt;/li>
+&lt;/ul></description></item></channel></rss>

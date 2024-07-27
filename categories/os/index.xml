@@ -4058,26 +4058,26 @@ data-flex-basis="422px"
 &lt;/span>&lt;span class="lnt">20
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> # qemu -kernel loads the kernel at 0x80000000
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # and causes each CPU to jump there.
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # kernel.ld causes the following code to
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # be placed at 0x80000000.
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">.section .text
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">_entry:
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # set up a stack for C.
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # stack0 is declared in start.c,
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # with a 4096-byte stack per CPU.
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # sp = stack0 + (hartid * 4096)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> la sp, stack0
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> li a0, 1024*4
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> csrr a1, mhartid
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> addi a1, a1, 1
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> mul a0, a0, a1
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> add sp, sp, a0
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # jump to start() in start.c
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> call start
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">spin:
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> j spin
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># qemu -kernel loads the kernel at 0x80000000&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># and causes each CPU to jump there.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># kernel.ld causes the following code to&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># be placed at 0x80000000.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">.&lt;/span>&lt;span class="n">section&lt;/span> &lt;span class="o">.&lt;/span>&lt;span class="n">text&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">_entry&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># set up a stack for C.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># stack0 is declared in start.c,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># with a 4096-byte stack per CPU.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># sp = stack0 + (hartid * 4096)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">la&lt;/span> &lt;span class="n">sp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">stack0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">li&lt;/span> &lt;span class="n">a0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1024&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">4&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">csrr&lt;/span> &lt;span class="n">a1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">mhartid&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">addi&lt;/span> &lt;span class="n">a1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">a1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mul&lt;/span> &lt;span class="n">a0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">a0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">a1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">add&lt;/span> &lt;span class="n">sp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">sp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">a0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># jump to start() in start.c&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">call&lt;/span> &lt;span class="n">start&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">spin&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">j&lt;/span> &lt;span class="n">spin&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>上面的汇编代码设置好栈顶寄存器后将跳转到 &lt;code>kernel/start.c&lt;/code>中的&lt;code>start&lt;/code>函数，注意在机器刚启动时处在&lt;code>machine mode&lt;/code>，该模式下拥有所有的权限。&lt;/p>
